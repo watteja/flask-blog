@@ -1,0 +1,16 @@
+# Python byte-compiled files
+*.pyc
+__pycache__/
+
+# Instance folder
+instance/
+
+# Test cache and output
+.pytest-cache/
+.coverage
+htmlcov/
+
+# Build and distribution folders
+dist/
+build/
+*.egg-info/
