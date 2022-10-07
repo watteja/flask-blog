@@ -28,9 +28,18 @@ def index():
 
 
 @bp.route("/create", methods=("GET", "POST"))
+@bp.route("/<int:id>/update", methods=("GET", "POST"))
 @login_required
-def create():
-    """Create a new post for the current user."""
+def create_update(id=None):
+    """
+    Create new or update an existing post.
+
+    Create a new post for the current user if no post id is specified.
+    Otherwise, edit a post if the current user is the author.
+
+    Args:
+        id: Id of the post to edit.
+    """
     if request.method == "POST":
         title = request.form["title"]
         body = request.form["body"]
@@ -43,14 +52,25 @@ def create():
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                "INSERT INTO post (title, body, author_id)" " VALUES (?, ?, ?)",
-                (title, body, g.user["id"]),
-            )
+            # execute a different query depending on if it's creating or updating a post
+            if id is None:
+                db.execute(
+                    "INSERT INTO post (title, body, author_id)" " VALUES (?, ?, ?)",
+                    (title, body, g.user["id"]),
+                )
+            else:
+                db.execute(
+                    "UPDATE post SET title = ?, body = ?" "WHERE id = ?",
+                    (title, body, id),
+                )
             db.commit()
             return redirect(url_for("blog.index"))
 
-    return render_template("blog/create.html")
+    if id:
+        post = get_post(id)
+        return render_template("blog/update.html", post=post)
+    else:
+        return render_template("blog/create.html")
 
 
 def get_post(id, check_author=True):
@@ -63,10 +83,10 @@ def get_post(id, check_author=True):
     Args:
         id: id of post to get
         check_author: require the current user to be the author
-    
+
     Returns:
         The post with author information.
-    
+
     Raises:
         404: if a post with the given id doesn't exist
         403: if the current user isn't the author
@@ -90,34 +110,6 @@ def get_post(id, check_author=True):
         abort(403)
 
     return post
-
-
-@bp.route("/<int:id>/update", methods=("GET", "POST"))
-@login_required
-def update(id):
-    """Update a post if the current user is the author."""
-    # TODO: possibly refactor so update() and create() are one view and template
-    post = get_post(id)
-
-    if request.method == "POST":
-        title = request.form["title"]
-        body = request.form["body"]
-        error = None
-
-        if not title:
-            error = "Title is required."
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                "UPDATE post SET title = ?, body = ?" "WHERE id = ?", (title, body, id)
-            )
-            db.commit()
-            return redirect(url_for("blog.index"))
-
-    return render_template("blog/update.html", post=post)
 
 
 @bp.route("/<int:id>/delete", methods=("POST",))
