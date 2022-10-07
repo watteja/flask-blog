@@ -40,6 +40,9 @@ def create_update(id=None):
     Args:
         id: Id of the post to edit.
     """
+    if id:
+        post = get_post(id)
+
     if request.method == "POST":
         title = request.form["title"]
         body = request.form["body"]
@@ -67,7 +70,6 @@ def create_update(id=None):
             return redirect(url_for("blog.index"))
 
     if id:
-        post = get_post(id)
         return render_template("blog/update.html", post=post)
     else:
         return render_template("blog/create.html")
