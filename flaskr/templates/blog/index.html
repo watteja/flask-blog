@@ -9,7 +9,7 @@
     <p><a class="action" href="{{ url_for('blog.create_update') }}">Add new entry</a></p>
   {% endif %}
   {% for post in posts %}
-    <article class="card mb-3">
+    <article class="card mb-3 post">
       <div class="card-header">
         <div class="d-flex justify-content-between">
           <div>
@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="card-body">
-        <h4>{{ post['title'] }}</h4>
+        <h5 class="card-title">{{ post['title'] }}</h5>
         <p class="card-text">{{ post['body'] }}</p>
       </div>
     </article>

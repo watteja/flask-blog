@@ -4,8 +4,15 @@ nav .navbar-brand
     font-size: xx-large;
 }
 
-/* Colors for brand */
+/* Brand color */
 nav .navbar-brand
 {
     color: #537fbe;
+}
+
+/* Post formatting */
+.post .card-title,
+.post .card-text
+{
+    white-space: break-spaces;
 }
