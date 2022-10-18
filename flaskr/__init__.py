@@ -6,7 +6,7 @@ import os
 
 from flask import Flask
 
-from . import db, auth, blog
+from . import db, auth, blog, filters
 
 
 def create_app(test_config=None):
@@ -52,6 +52,7 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
+    app.register_blueprint(filters.bp)
 
     # make url_for("index") == url_for("blog.index")
     # it's also possible to define a separate main index
