@@ -41,6 +41,11 @@ def create_app(test_config=None):
     @app.route("/hello")
     def hello():
         return "Hello, World!"
+    
+    # a simple page that takes an argument from URL
+    @app.route("/user/<name>")
+    def user(name):
+        return "<h1>Hello, {}!</h1>".format(name)
     """
 
     db.init_app(app)

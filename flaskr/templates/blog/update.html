@@ -1,21 +1,26 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Edit {{ post['title'] }}{% endblock %}</h1>
+  <h3>{% block title %}Edit {{ post['title'] }}{% endblock %}</h3>
 {% endblock %}
 
 {% block content %}
   <form method="post">
-    <label for="title">Title</label>
-    <!-- Use new input if it failed validation. Otherwise, use original title. -->
-    <input name="title" id="title"
-      value="{{ request.form['title'] or post['title'] }}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
-    <input type="submit" value="Save">
+    <div class="form-group mb-2">
+      <label for="title" class="mb-1">Title</label>
+      <!-- Use new input if it failed validation. Otherwise, use original title. -->
+      <input class="form-control" id="title" name="title"
+        value="{{ request.form['title'] or post['title'] }}" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="body" class="mb-1">Body</label>
+      <textarea class="form-control" id="body" name="body" rows="10">{{ request.form['body'] or post['body'] }}
+      </textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save changes</button>
   </form>
   <hr>
   <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
-    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+    <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure?');">Delete</button>
   </form>
 {% endblock %}

@@ -46,13 +46,13 @@ def create_update(id=None):
     if request.method == "POST":
         title = request.form["title"]
         body = request.form["body"]
-        error = None
+        message = None
 
         if not title:
-            error = "Title is required."
+            message = "Title is required."
 
-        if error is not None:
-            flash(error)
+        if message is not None:
+            flash(message, "error")
         else:
             db = get_db()
             # execute a different query depending on if it's creating or updating a post
@@ -66,7 +66,10 @@ def create_update(id=None):
                     "UPDATE post SET title = ?, body = ?" "WHERE id = ?",
                     (title, body, id),
                 )
+                message = "Post updated!"
             db.commit()
+            if message is not None:
+                flash(message)
             return redirect(url_for("blog.index"))
 
     if id:
@@ -127,4 +130,5 @@ def delete(id):
     db = get_db()
     db.execute("DELETE FROM post WHERE id = ?", (id,))
     db.commit()
+    flash("Post deleted!")
     return redirect(url_for("blog.index"))
