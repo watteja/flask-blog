@@ -4,9 +4,12 @@ and it tells Python that 'flaskr' directory should be treated as a package.
 """
 import os
 
+import click
 from flask import Flask
+from flask.cli import with_appcontext
+from flask_sqlalchemy import SQLAlchemy
 
-from . import db, auth, blog, filters
+db = SQLAlchemy()
 
 
 def create_app(test_config=None):
@@ -19,8 +22,12 @@ def create_app(test_config=None):
     app.config.from_mapping(
         # secret key will be overriden with random value when deploying
         SECRET_KEY="dev",
-        # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
+        # configure the SQLite database, relative to the app instance folder
+        SQLALCHEMY_DATABASE_URI="sqlite:///flaskr.sqlite",
+        # ensure templates are auto-reloaded
+        TEMPLATES_AUTO_RELOAD=True,
+        # specify that you don't use event system (https://stackoverflow.com/a/33790196/7699495)
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 
     if test_config is None:
@@ -48,15 +55,34 @@ def create_app(test_config=None):
         return "<h1>Hello, {}!</h1>".format(name)
     """
 
+    # initialize Flask-SQLAlchemy and the init-db command
     db.init_app(app)
+    app.cli.add_command(init_db_command)
 
+    from flaskr import auth, blog, filters
+
+    # apply the blueprints to the app
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
     app.register_blueprint(filters.bp)
 
-    # make url_for("index") == url_for("blog.index")
+    # make url_for("index") point at "/", which is handled by url_for("blog.index")
     # it's also possible to define a separate main index
     # with app.route, while giving the blog blueprint a url_prefix
     app.add_url_rule("/", endpoint="index")
 
     return app
+
+
+def init_db():
+    """Clear the existing data and create new tables."""
+    db.drop_all()
+    db.create_all()
+
+
+@click.command("init-db")
+@with_appcontext
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    click.echo("Initialized the database.")
