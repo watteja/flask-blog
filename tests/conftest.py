@@ -1,40 +1,39 @@
-import os
-import tempfile
+from datetime import datetime
 
 import pytest
-from flaskr import create_app
-from flaskr.db import get_db, init_db
+from werkzeug.security import generate_password_hash
 
-# read in SQL for populating test data
-with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:
-    __data_sql = f.read().decode("utf8")
+from flaskr import create_app
+from flaskr import db, init_db
+from flaskr.models import User, Post
+
+_user1_pass = generate_password_hash("test")
+_user2_pass = generate_password_hash("other")
 
 
 # fixtures are functions which will run before each test function to which it is applied
 @pytest.fixture
 def app():
     """Create and configure a new app instance for each test."""
-    # create a temporary file to isolate the database for each test
-    db_fd, db_path = tempfile.mkstemp()
-
     # create the app with common test config
-    app = create_app(
-        {
-            "TESTING": True,
-            "DATABASE": db_path,
-        }
-    )
+    app = create_app({"TESTING": True, "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"})
 
     # create the database and load test data
     with app.app_context():
         init_db()
-        get_db().executescript(__data_sql)
+        # use pre-generated hashes, since hashing for each test is slow
+        user1 = User(username="test", hash=_user1_pass)
+        user2 = User(username="other", hash=_user2_pass)
+        post1 = Post(
+            title="test title",
+            body="test\nbody",
+            author_id=1,
+            created=datetime(2022, 1, 1),
+        )
+        db.session.add_all([user1, user2, post1])
+        db.session.commit()
 
     yield app
-
-    # close and remove the temporary database
-    os.close(db_fd)
-    os.unlink(db_path)
 
 
 @pytest.fixture

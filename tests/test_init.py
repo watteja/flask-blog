@@ -17,3 +17,18 @@ def test_hello(client):
     response = client.get("/hello")
     assert response.data == b"Hello, World!"
 """
+
+
+def test_init_db_command(runner, monkeypatch):
+    called = False
+
+    def fake_init_db():
+        nonlocal called
+        called = True
+
+    # use fixture to replace call to init_db() with fake_init_db()
+    monkeypatch.setattr("flaskr.init_db", fake_init_db)
+    # call 'init-db' command with fixture defined in conftest.py
+    result = runner.invoke(args=["init-db"])
+    assert "Initialized" in result.output
+    assert called
