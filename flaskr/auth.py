@@ -11,6 +11,7 @@ from flask import (
     url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.exceptions import abort
 
 from flaskr import db
 from flaskr.models import User
@@ -35,18 +36,24 @@ def register():
             error = f"User {username} is already registered."
 
         if error is None:
-            password_hash = generate_password_hash(password)
-            new_user = User(username=username, hash=password_hash)
-            db.session.add(new_user)
-            db.session.commit()
-
-            # TODO: ensure user is correctly registered
-
+            new_user = add_new_user(username, password)
+            # ensure user is correctly registered
+            if not new_user.id:
+                abort(500)
             return redirect(url_for("auth.login"))
 
         flash(error, "error")
 
     return render_template("auth/register.html")
+
+
+def add_new_user(username, password):
+    """Add new user info to the database."""
+    password_hash = generate_password_hash(password)
+    new_user = User(username=username, hash=password_hash)
+    db.session.add(new_user)
+    db.session.commit()
+    return new_user
 
 
 @bp.route("/login", methods=("GET", "POST"))

@@ -5,7 +5,7 @@ and it tells Python that 'flaskr' directory should be treated as a package.
 import os
 
 import click
-from flask import Flask
+from flask import Flask, render_template
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 
@@ -55,6 +55,11 @@ def create_app(test_config=None):
         return "<h1>Hello, {}!</h1>".format(name)
     """
 
+    # register custom error handlers
+    app.register_error_handler(403, forbidden)
+    app.register_error_handler(404, page_not_found)
+    app.register_error_handler(500, internal_server_error)
+
     # initialize Flask-SQLAlchemy and the init-db command
     db.init_app(app)
     app.cli.add_command(init_db_command)
@@ -72,6 +77,21 @@ def create_app(test_config=None):
     app.add_url_rule("/", endpoint="index")
 
     return app
+
+
+def forbidden(e):
+    """Error handler callable for code 403."""
+    return render_template("errors/403.html"), 403
+
+
+def page_not_found(e):
+    """Error handler callable for code 404."""
+    return render_template("errors/404.html"), 404
+
+
+def internal_server_error(e):
+    """Error handler callable for code 500."""
+    return render_template("errors/500.html"), 500
 
 
 def init_db():

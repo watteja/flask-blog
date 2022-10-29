@@ -36,6 +36,21 @@ def test_register_validate_input(client, username, password, message):
     assert message in response.text
 
 
+def test_register_server_error(client, monkeypatch):
+    called = False
+
+    def fake_add_new_user(username, password):
+        nonlocal called
+        called = True
+        # https://stackoverflow.com/a/29480317/7699495
+        return type("", (object,), {"id": None})
+
+    monkeypatch.setattr("flaskr.auth.add_new_user", fake_add_new_user)
+    response = client.post("auth/register", data={"username": "new", "password": "new"})
+    assert response.status_code == 500
+    assert called
+
+
 def test_login(client, auth):
     # test that viewing the page renders without template errors
     assert client.get("/auth/login").status_code == 200
