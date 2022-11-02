@@ -39,7 +39,7 @@ def create_update(id=None):
     Create new or update an existing post.
 
     Create a new post for the current user if no post id is specified.
-    Otherwise, edit a post if the current user is the author.
+    Otherwise, edit an existing post if the current user is the author.
 
     Args:
         id: Id of the post to edit.

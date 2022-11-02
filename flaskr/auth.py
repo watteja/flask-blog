@@ -2,6 +2,7 @@ import functools
 
 from flask import (
     Blueprint,
+    current_app,
     flash,
     g,
     redirect,
@@ -12,6 +13,9 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.exceptions import abort
+
+from flask_admin import AdminIndexView
+from flask_admin.contrib.sqla import ModelView
 
 from flaskr import db
 from flaskr.models import User
@@ -110,3 +114,25 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+class FlaskrAdminIndexView(AdminIndexView):
+    """Customized admin index view class for Flask-Admin."""
+
+    def is_accessible(self):
+        return g.user and (g.user.username == "john")
+
+    def inaccessible_callback(self, name, **kwargs):
+        # return status 403 if user doesn't have access
+        abort(403)
+
+
+class FlaskrModelView(ModelView):
+    """Customized model view class for Flask-Admin."""
+
+    def is_accessible(self):
+        return g.user and (g.user.username == current_app.config["ADMIN_USERNAME"])
+
+    def inaccessible_callback(self, name, **kwargs):
+        # return status 403 if user doesn't have access
+        abort(403)

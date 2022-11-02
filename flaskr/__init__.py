@@ -8,6 +8,8 @@ import click
 from flask import Flask, render_template
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
+
 
 db = SQLAlchemy()
 
@@ -22,12 +24,16 @@ def create_app(test_config=None):
     app.config.from_mapping(
         # secret key will be overriden with random value when deploying
         SECRET_KEY="dev",
+        # admin will be overriden when deploying
+        ADMIN_USERNAME = "john",
         # configure the SQLite database, relative to the app instance folder
         SQLALCHEMY_DATABASE_URI="sqlite:///flaskr.sqlite",
         # ensure templates are auto-reloaded
         TEMPLATES_AUTO_RELOAD=True,
         # specify that you don't use event system (https://stackoverflow.com/a/33790196/7699495)
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        # set optional Bootswatch theme for Flask-Admin
+        FLASK_ADMIN_SWATCH="cerulean",
     )
 
     if test_config is None:
@@ -65,11 +71,25 @@ def create_app(test_config=None):
     app.cli.add_command(init_db_command)
 
     from flaskr import auth, blog, filters
+    from flaskr.models import Post, User
 
     # apply the blueprints to the app
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
     app.register_blueprint(filters.bp)
+
+    from flaskr.auth import FlaskrModelView, FlaskrAdminIndexView
+
+    # initialize Flask-Admin
+    admin = Admin(
+        app,
+        name="Flaskr Admin",
+        template_mode="bootstrap3",
+        index_view=FlaskrAdminIndexView(),
+    )
+    # add administrative views
+    admin.add_view(FlaskrModelView(User, db.session))
+    admin.add_view(FlaskrModelView(Post, db.session))
 
     # make url_for("index") point at "/", which is handled by url_for("blog.index")
     # it's also possible to define a separate main index
@@ -77,6 +97,20 @@ def create_app(test_config=None):
     app.add_url_rule("/", endpoint="index")
 
     return app
+
+
+def init_db():
+    """Clear the existing data and create new tables."""
+    db.drop_all()
+    db.create_all()
+
+
+@click.command("init-db")
+@with_appcontext
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    init_db()
+    click.echo("Initialized the database.")
 
 
 def forbidden(e):
@@ -92,17 +126,3 @@ def page_not_found(e):
 def internal_server_error(e):
     """Error handler callable for code 500."""
     return render_template("errors/500.html"), 500
-
-
-def init_db():
-    """Clear the existing data and create new tables."""
-    db.drop_all()
-    db.create_all()
-
-
-@click.command("init-db")
-@with_appcontext
-def init_db_command():
-    """Clear the existing data and create new tables."""
-    init_db()
-    click.echo("Initialized the database.")
