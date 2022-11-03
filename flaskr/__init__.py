@@ -9,6 +9,7 @@ from flask import Flask, render_template
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
+from flask_admin.menu import MenuLink
 
 
 db = SQLAlchemy()
@@ -78,18 +79,19 @@ def create_app(test_config=None):
     app.register_blueprint(blog.bp)
     app.register_blueprint(filters.bp)
 
-    from flaskr.auth import FlaskrModelView, FlaskrAdminIndexView
+    from flaskr.auth import CustomAdminIndexView, UserModelView, PostModelView
 
     # initialize Flask-Admin
     admin = Admin(
         app,
         name="Flaskr Admin",
         template_mode="bootstrap3",
-        index_view=FlaskrAdminIndexView(),
+        index_view=CustomAdminIndexView(),
     )
+    admin.add_link(MenuLink(name="Flaskr Home Page", url="/", category="Links"))
     # add administrative views
-    admin.add_view(FlaskrModelView(User, db.session))
-    admin.add_view(FlaskrModelView(Post, db.session))
+    admin.add_view(UserModelView(User, db.session))
+    admin.add_view(PostModelView(Post, db.session))
 
     # make url_for("index") point at "/", which is handled by url_for("blog.index")
     # it's also possible to define a separate main index

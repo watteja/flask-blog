@@ -116,19 +116,8 @@ def login_required(view):
     return wrapped_view
 
 
-class FlaskrAdminIndexView(AdminIndexView):
-    """Customized admin index view class for Flask-Admin."""
-
-    def is_accessible(self):
-        return g.user and (g.user.username == "john")
-
-    def inaccessible_callback(self, name, **kwargs):
-        # return status 403 if user doesn't have access
-        abort(403)
-
-
-class FlaskrModelView(ModelView):
-    """Customized model view class for Flask-Admin."""
+class AdminAccessMixin:
+    """Mixin for specifying admin-only access for Flask-Admin views."""
 
     def is_accessible(self):
         return g.user and (g.user.username == current_app.config["ADMIN_USERNAME"])
@@ -136,3 +125,38 @@ class FlaskrModelView(ModelView):
     def inaccessible_callback(self, name, **kwargs):
         # return status 403 if user doesn't have access
         abort(403)
+
+
+class CustomAdminIndexView(AdminAccessMixin, AdminIndexView):
+    """Customized admin index view class for Flask-Admin."""
+
+    pass
+
+
+class UserModelView(AdminAccessMixin, ModelView):
+    """Customized model view class for Flask-Admin."""
+
+    page_size = 50  # the number of entries to display on the list view
+    create_modal = True
+    edit_modal = True
+    column_searchable_list = ["username"]
+    form_excluded_columns = ["hash"]
+
+
+class PostModelView(AdminAccessMixin, ModelView):
+    """Customized model view class for Flask-Admin."""
+
+    page_size = 50  # the number of entries to display on the list view
+    create_modal = True
+    edit_modal = True
+    column_searchable_list = ["title"]
+    column_filters = ["body"]
+    #  TODO: add ajax refs later, when you grok relations in SQLAlchemy
+    #   (and also have more example users). Then also consider filtering them,
+    #   or managing them inline: https://flask-admin.readthedocs.io/en/latest/introduction/#customizing-built-in-views
+    # form_ajax_refs = {
+    #     "author_id": {
+    #         "fields": ["username"],
+    #         "page_size": 2
+    #     }
+    # }
