@@ -149,14 +149,12 @@ class PostModelView(AdminAccessMixin, ModelView):
     page_size = 50  # the number of entries to display on the list view
     create_modal = True
     edit_modal = True
-    column_searchable_list = ["title"]
+    column_searchable_list = ["title", "author.username"]
     column_filters = ["body"]
-    #  TODO: add ajax refs later, when you grok relations in SQLAlchemy
-    #   (and also have more example users). Then also consider filtering them,
-    #   or managing them inline: https://flask-admin.readthedocs.io/en/latest/introduction/#customizing-built-in-views
-    # form_ajax_refs = {
-    #     "author_id": {
-    #         "fields": ["username"],
-    #         "page_size": 2
-    #     }
-    # }
+    column_sortable_list = ["title", ("author", ("author.username"))]
+    form_ajax_refs = { # this will appear as a filterable field in create/edit form
+        "author": {
+            "fields": ["username"],
+            "page_size": 5
+        }
+    }
