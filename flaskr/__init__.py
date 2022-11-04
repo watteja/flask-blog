@@ -26,7 +26,7 @@ def create_app(test_config=None):
         # secret key will be overriden with random value when deploying
         SECRET_KEY="dev",
         # admin will be overriden when deploying
-        ADMIN_USERNAME = "john",
+        ADMIN_USERNAME="john",
         # configure the SQLite database, relative to the app instance folder
         SQLALCHEMY_DATABASE_URI="sqlite:///flaskr.sqlite",
         # ensure templates are auto-reloaded

@@ -9,6 +9,7 @@ from flaskr.models import User, Post
 
 _user1_pass = generate_password_hash("test")
 _user2_pass = generate_password_hash("other")
+_admin_pass = generate_password_hash("john123")
 
 
 # fixtures are functions which will run before each test function to which it is applied
@@ -22,6 +23,7 @@ def app():
     with app.app_context():
         init_db()
         # use pre-generated hashes, since hashing for each test is slow
+        admin = User(username="john", hash=_admin_pass)
         user1 = User(username="test", hash=_user1_pass)
         user2 = User(username="other", hash=_user2_pass)
         post1 = Post(
@@ -30,7 +32,7 @@ def app():
             author_id=1,
             created=datetime(2022, 1, 1),
         )
-        db.session.add_all([user1, user2, post1])
+        db.session.add_all([user1, user2, admin, post1])
         db.session.commit()
 
     yield app

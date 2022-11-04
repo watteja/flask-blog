@@ -81,6 +81,15 @@ def test_login_validate_input(auth, username, password, message):
     assert message in response.text
 
 
+def test_admin(client, auth):
+    # test that only admin can access admin page
+    auth.login()
+    assert client.get("/admin", follow_redirects=True).status_code == 403
+    auth.login("john", "john123")
+    response = client.get("/admin", follow_redirects=True)
+    assert "Welcome admin" in response.text
+
+
 def test_logout(client, auth):
     auth.login()
 
