@@ -10,7 +10,9 @@ def test_register(client, app):
     assert client.get("/auth/register").status_code == 200
 
     # test that successful registration redirects to the login page
-    response = client.post("/auth/register", data={"username": "a", "password": "a"})
+    response = client.post(
+        "/auth/register", data={"username": "a", "password": "a", "confirmation": "a"}
+    )
     assert response.headers["Location"] == "/auth/login"
 
     # test that the user was inserted into the database
@@ -22,16 +24,18 @@ def test_register(client, app):
 
 # define multiple sets of parameters in a fixture function
 @pytest.mark.parametrize(
-    ("username", "password", "message"),
+    ("username", "password", "confirmation", "message"),
     (
-        ("", "", "Username is required."),
-        ("a", "", "Password is required."),
-        ("test", "test", "already registered"),
+        ("", "", "", "Username is required."),
+        ("a", "", "", "Password is required."),
+        ("a", "a", "b", "Passwords must match."),
+        ("test", "test", "test", "already registered"),
     ),
 )
-def test_register_validate_input(client, username, password, message):
+def test_register_validate_input(client, username, password, confirmation, message):
     response = client.post(
-        "/auth/register", data={"username": username, "password": password}
+        "/auth/register",
+        data={"username": username, "password": password, "confirmation": confirmation},
     )
     assert message in response.text
 
@@ -46,7 +50,10 @@ def test_register_server_error(client, monkeypatch):
         return type("", (object,), {"id": None})
 
     monkeypatch.setattr("flaskr.auth.add_new_user", fake_add_new_user)
-    response = client.post("auth/register", data={"username": "new", "password": "new"})
+    response = client.post(
+        "auth/register",
+        data={"username": "new", "password": "new", "confirmation": "new"},
+    )
     assert response.status_code == 500
     assert called
 

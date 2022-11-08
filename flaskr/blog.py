@@ -91,6 +91,9 @@ def create_post(id):
         message = None
 
         if not title:
+            message = "Title is required."
+
+        if message is not None:
             flash(message, "error")
         else:
             db.session.add(Post(title=title, body=body, topic=topic))
@@ -125,6 +128,27 @@ def get_topic(id):
     return topic
 
 
+def get_post(id):
+    """
+    Get a post and its topic by id.
+
+    Checks that the id exists, and that the current user is
+    the author of the topic in which the post was posted.
+
+    Args:
+        id: id of post to get
+    
+    Returns:
+        The post with the passed id.
+    """
+    post = db.get_or_404(Post, id, description=f"Post id {id} doesn't exist.")
+
+    if post.topic.author != g.user:
+        abort(403)
+    
+    return post
+
+
 @bp.route("/<int:id>/update_post", methods=("GET", "POST"))
 @login_required
 def update_post(id):
@@ -134,7 +158,7 @@ def update_post(id):
     Args:
         id: id of the post to edit.
     """
-    post = db.get_or_404(Post, id, description=f"Post id {id} doesn't exist.")
+    post = get_post(id)
 
     if request.method == "POST":
         title = request.form["title"]
@@ -167,7 +191,7 @@ def delete(id):
     Ensures that the post exists and that the logged in user is the
     author of the post.
     """
-    post = db.get_or_404(Post, id, description=f"Post id {id} doesn't exist.")
+    post = get_post(id)
     topic_id = post.topic_id
     db.session.delete(post)
     db.session.commit()

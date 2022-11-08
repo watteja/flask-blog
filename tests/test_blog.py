@@ -1,7 +1,7 @@
 import pytest
 
 from flaskr import db
-from flaskr.models import Post
+from flaskr.models import Topic, Post
 
 
 def test_index(client, auth):
@@ -12,19 +12,16 @@ def test_index(client, auth):
     auth.login()
     response_text = client.get("/").text
     assert "Log Out" in response_text
-    assert "test title" in response_text
-    assert "Author: test" in response_text
-    assert "Saturday, 01 January 2022, 00:00 UTC" in response_text
-    assert "test\nbody" in response_text
-    assert 'href="/1/update"' in response_text
+    assert "Register" not in response_text
 
 
 @pytest.mark.parametrize(
     "path",
     (
-        "/create",
-        "/1/update",
-        "/1/delete",
+        "/create_topic",
+        "/create_post/1",
+        "/1/update_post",
+        "/1/delete_post",
     ),
 )
 def test_login_required(client, path):
@@ -32,26 +29,44 @@ def test_login_required(client, path):
     assert response.headers["Location"] == "/auth/login"
 
 
-def test_author_required(app, client, auth):
-    # change the post author to another user
+def test_topics(client, auth):
+    auth.login()
+    response = client.get("/topics")
+    assert "test topic" in response.text
+    # current user can't see other user's topic
+    assert "other topic" not in response.text
+    # current user can't see or create posts in other user's topic
+    assert client.get("topics/2").status_code == 403
+    assert client.post("/create_post/2").status_code == 403
+
+
+def test_topic(client, auth):
+    auth.login()
+    response_text = client.get("/topics/1").text
+    assert "test title" in response_text
+    assert "Author: test" in response_text
+    assert "Saturday, 01 January 2022, 00:00 UTC" in response_text
+    assert "test\nbody" in response_text
+    assert 'href="/1/update_post"' in response_text
+
+
+def test_topic_required(app, client, auth):
+    # assign the post to another topic
     with app.app_context():
-        post = db.session.get(Post, 1)
-        post.author_id = 2
+        db.session.get(Post, 1).topic = db.session.get(Topic, 2)
         db.session.commit()
 
     auth.login()
     # current user can't modify other user's post
-    assert client.post("/1/update").status_code == 403
-    assert client.post("/1/delete").status_code == 403
-    # current user doesn't see edit link
-    assert 'href="/1/update"' not in client.get("/").text
+    assert client.post("/1/update_post").status_code == 403
+    assert client.post("/1/delete_post").status_code == 403
 
 
 @pytest.mark.parametrize(
     "path",
     (
-        "/2/update",
-        "/2/delete",
+        "/2/update_post",
+        "/2/delete_post",
     ),
 )
 def test_exists_required(client, auth, path):
@@ -61,8 +76,8 @@ def test_exists_required(client, auth, path):
 
 def test_create(client, auth, app):
     auth.login()
-    assert client.get("/create").status_code == 200
-    client.post("/create", data={"title": "created", "body": ""})
+    assert client.get("/create_post/1").status_code == 200
+    client.post("/create_post/1", data={"title": "created", "body": ""})
 
     with app.app_context():
         select = db.select(db.func.count(Post.id))
@@ -72,8 +87,8 @@ def test_create(client, auth, app):
 
 def test_update(client, auth, app):
     auth.login()
-    assert client.get("/1/update").status_code == 200
-    client.post("/1/update", data={"title": "updated", "body": ""})
+    assert client.get("/1/update_post").status_code == 200
+    client.post("/1/update_post", data={"title": "updated", "body": ""})
 
     with app.app_context():
         assert db.session.get(Post, 1).title == "updated"
@@ -82,8 +97,8 @@ def test_update(client, auth, app):
 @pytest.mark.parametrize(
     "path",
     (
-        "/create",
-        "/1/update",
+        "/create_post/1",
+        "/1/update_post",
     ),
 )
 def test_create_update_validate(client, auth, path):
@@ -94,8 +109,8 @@ def test_create_update_validate(client, auth, path):
 
 def test_delete(client, auth, app):
     auth.login()
-    response = client.post("/1/delete")
-    assert response.headers["Location"] == "/"
+    response = client.post("/1/delete_post")
+    assert response.headers["Location"] == "/topics/1"
 
     with app.app_context():
         assert db.session.get(Post, 1) is None

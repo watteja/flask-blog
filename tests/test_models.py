@@ -1,8 +1,8 @@
 from flaskr import db
-from flaskr.models import User, Post
+from flaskr.models import User, Topic, Post
 
 
-def test_user_repr(app):
+def test_user(app):
     with app.app_context():
         select = db.select(User).filter_by(username="other")
         user = db.session.execute(select).scalar()
@@ -10,7 +10,14 @@ def test_user_repr(app):
         assert repr(user) == "<User: 'other'>"
 
 
-def test_post_repr(app):
+def test_topic(app):
+    with app.app_context():
+        topic = db.session.get(Topic, 1)
+        assert str(topic) == "test topic"
+        assert repr(topic) == "<Topic: 'test topic'>"
+
+
+def test_post(app):
     with app.app_context():
         post = db.session.get(Post, 1)
         assert str(post) == "test title"

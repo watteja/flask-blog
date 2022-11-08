@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 
 from flaskr import create_app
 from flaskr import db, init_db
-from flaskr.models import User, Post
+from flaskr.models import User, Topic, Post
 
 _user1_pass = generate_password_hash("test")
 _user2_pass = generate_password_hash("other")
@@ -26,13 +26,15 @@ def app():
         admin = User(username="john", hash=_admin_pass)
         user1 = User(username="test", hash=_user1_pass)
         user2 = User(username="other", hash=_user2_pass)
+        topic1 = Topic(name="test topic", author=user1, created=datetime(2022, 1, 1))
+        topic2 = Topic(name="other topic", author=user2, created=datetime(2022, 1, 2))
         post1 = Post(
             title="test title",
             body="test\nbody",
-            author_id=1,
+            topic=topic1,
             created=datetime(2022, 1, 1),
         )
-        db.session.add_all([user1, user2, admin, post1])
+        db.session.add_all([user1, user2, admin, topic1, topic2, post1])
         db.session.commit()
 
     yield app
