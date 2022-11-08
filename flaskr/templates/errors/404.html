@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  <p>What you were looking for is just not there.</p>
+  {% if description %}
+    <p>{{ description }}</p>
+  {% else %}
+    <p>What you were looking for is just not there.</p>
+  {% endif %}  
   <p><a href="{{ url_for('blog.index') }}">go back home</a></p>
 {% endblock %}

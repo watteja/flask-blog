@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}{{ topic.name }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <p><a class="action" href="{{ url_for('blog.create_post', id=topic.id) }}">Add new entry</a></p>
+  {% for post in posts %}
+    <article class="card mb-3 post">
+      <div class="card-header">
+        <div class="d-flex justify-content-between">
+          <div>
+            Author: {{ g.user.username }}
+            <small>(<a class="action" href="{{ url_for('blog.update_post', id=post.id) }}">Edit</a>)</small>
+          </div>
+          <div>
+            <small class="text-muted">{{ post.created | format_datetime }}</small>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.body }}</p>
+      </div>
+    </article>
+  <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
+  {% else %} 
+    <p>There are no entries for this topic yet.</p>
+  {% endfor %}
+{% endblock %}

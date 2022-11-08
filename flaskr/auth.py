@@ -28,12 +28,15 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        confirmation = request.form["confirmation"]
         error = None
 
         if not username:
             error = "Username is required."
         elif not password:
             error = "Password is required."
+        elif password != confirmation:
+            error = "Passwords must match."
         elif db.session.execute(
             db.select(db.select(User).filter_by(username=username).exists())
         ).scalar():
@@ -143,18 +146,26 @@ class UserModelView(AdminAccessMixin, ModelView):
     form_excluded_columns = ["hash"]
 
 
+class TopicModelView(AdminAccessMixin, ModelView):
+    """Customized model view class for Flask-Admin."""
+
+    page_size = 10
+    create_modal = True
+    edit_modal = True
+    column_searchable_list = ["name", "author.username"]
+    column_sortable_list = ["name", ("author", ("author.username"))]
+    form_ajax_refs = {  # this will appear as a filterable field in create/edit form
+        "author": {"fields": ["username"], "page_size": 5}
+    }
+
+
 class PostModelView(AdminAccessMixin, ModelView):
     """Customized model view class for Flask-Admin."""
 
-    page_size = 50  # the number of entries to display on the list view
+    page_size = 50
     create_modal = True
     edit_modal = True
-    column_searchable_list = ["title", "author.username"]
+    column_searchable_list = ["title", "topic.name"]
     column_filters = ["body"]
-    column_sortable_list = ["title", ("author", ("author.username"))]
-    form_ajax_refs = { # this will appear as a filterable field in create/edit form
-        "author": {
-            "fields": ["username"],
-            "page_size": 5
-        }
-    }
+    column_sortable_list = ["title", ("topic", ("topic.name"))]
+    form_ajax_refs = {"topic": {"fields": ["name"], "page_size": 5}}

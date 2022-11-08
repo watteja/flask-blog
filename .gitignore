@@ -5,6 +5,9 @@ __pycache__/
 # Instance folder
 instance/
 
+# IDE settings folder
+.vscode/
+
 # Test cache and output
 .pytest-cache/
 .coverage

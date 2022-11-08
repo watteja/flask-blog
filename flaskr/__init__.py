@@ -72,14 +72,19 @@ def create_app(test_config=None):
     app.cli.add_command(init_db_command)
 
     from flaskr import auth, blog, filters
-    from flaskr.models import Post, User
+    from flaskr.models import User, Topic, Post
 
     # apply the blueprints to the app
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
     app.register_blueprint(filters.bp)
 
-    from flaskr.auth import CustomAdminIndexView, UserModelView, PostModelView
+    from flaskr.auth import (
+        CustomAdminIndexView,
+        UserModelView,
+        TopicModelView,
+        PostModelView,
+    )
 
     # initialize Flask-Admin
     admin = Admin(
@@ -91,6 +96,7 @@ def create_app(test_config=None):
     admin.add_link(MenuLink(name="Flaskr Home Page", url="/", category="Links"))
     # add administrative views
     admin.add_view(UserModelView(User, db.session))
+    admin.add_view(TopicModelView(Topic, db.session))
     admin.add_view(PostModelView(Post, db.session))
 
     # make url_for("index") point at "/", which is handled by url_for("blog.index")
@@ -122,7 +128,7 @@ def forbidden(e):
 
 def page_not_found(e):
     """Error handler callable for code 404."""
-    return render_template("errors/404.html"), 404
+    return render_template("errors/404.html", description=e.description), 404
 
 
 def internal_server_error(e):

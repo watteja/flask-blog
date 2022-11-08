@@ -11,41 +11,130 @@ from werkzeug.exceptions import abort
 
 from flaskr.auth import login_required
 from flaskr import db
-from flaskr.models import Post, User
+from flaskr.models import Topic, Post
 
 bp = Blueprint("blog", __name__)
 
 
 @bp.route("/")
 def index():
-    """Show all the posts, most recent first."""
-    select = (
-        db.select(
-            Post.id, Post.title, Post.body, Post.created, Post.author_id, User.username
-        )
-        .join_from(Post, User)
-        .order_by(Post.created.desc())
-    )
-    # scalars() returns objects, instead of rows
-    posts = db.session.execute(select).all()
-    return render_template("blog/index.html", posts=posts)
+    """The home page."""
+    return render_template("blog/index.html")
 
 
-@bp.route("/create", methods=("GET", "POST"))
-@bp.route("/<int:id>/update", methods=("GET", "POST"))
+@bp.route("/topics")
 @login_required
-def create_update(id=None):
-    """
-    Create new or update an existing post.
+def topics():
+    """Show all topics."""
+    select = db.select(Topic.id, Topic.name).filter_by(author=g.user)
+    # all() returns rows, while scalars() returns objects.
+    #   I'd use scalars() if I was using select(Topic) above
+    topics = db.session.execute(select).all()
+    return render_template("blog/topics.html", topics=topics)
 
-    Create a new post for the current user if no post id is specified.
-    Otherwise, edit an existing post if the current user is the author.
+
+@bp.route("/topics/<int:id>")
+@login_required
+def topic(id):
+    """
+    Show a single topic and all its entries, most recent first.
 
     Args:
-        id: Id of the post to edit.
+        id: id of the selected topic.
     """
-    if id:
-        post = get_post(id)
+    topic = get_topic(id)
+    select = (
+        db.select(Post.id, Post.created, Post.title, Post.body)
+        .filter_by(topic_id=id)
+        .order_by(Post.created.desc())
+    )
+    posts = db.session.execute(select).all()
+    return render_template("blog/topic.html", topic=topic, posts=posts)
+
+
+@bp.route("/create_topic", methods=("GET", "POST"))
+@login_required
+def create_topic():
+    """Create a new topic."""
+    if request.method == "POST":
+        name = request.form["name"]
+        message = None
+
+        if not name:
+            message = "Topic name is required."
+
+        if message is not None:
+            flash(message, "error")
+        else:
+            db.session.add(Topic(name=name, author=g.user))
+            db.session.commit()
+            # TODO: redirect instead to the new topic's (blank) page
+            return redirect(url_for("blog.topics"))
+
+    return render_template("blog/create_topic.html")
+
+
+@bp.route("/create_post/<int:id>", methods=("GET", "POST"))
+@login_required
+def create_post(id):
+    """
+    Create a new post for the chosen topic.
+
+    Args:
+        id: id of the chosen topic.
+    """
+    topic = get_topic(id)
+
+    if request.method == "POST":
+        title = request.form["title"]
+        body = request.form["body"]
+        message = None
+
+        if not title:
+            flash(message, "error")
+        else:
+            db.session.add(Post(title=title, body=body, topic=topic))
+            db.session.commit()
+            return redirect(url_for("blog.topic", id=id))
+
+    return render_template("blog/create_post.html")
+
+
+def get_topic(id):
+    """
+    Get a topic and its author by id.
+
+    Checks that the id exists and that the current user is
+    the author.
+
+    Args:
+        id: id of topic to get
+
+    Returns:
+        The topic with author information.
+
+    Raises:
+        404: if a topic with the given id doesn't exist
+        403: if the current user isn't the author
+    """
+    topic = db.get_or_404(Topic, id, description=f"Topic with id {id} doesn't exist.")
+
+    if topic.author != g.user:
+        abort(403)
+
+    return topic
+
+
+@bp.route("/<int:id>/update_post", methods=("GET", "POST"))
+@login_required
+def update_post(id):
+    """
+    Update an existing post if the current user is the author.
+
+    Args:
+        id: id of the post to edit.
+    """
+    post = db.get_or_404(Post, id, description=f"Post id {id} doesn't exist.")
 
     if request.method == "POST":
         title = request.form["title"]
@@ -58,53 +147,18 @@ def create_update(id=None):
         if message is not None:
             flash(message, "error")
         else:
-            # execute a different query depending on if it's creating or updating a post
-            if id:
-                post.title = title
-                post.body = body
-                message = "Post updated!"
-            else:
-                db.session.add(Post(title=title, body=body, author_id=g.user.id))
-
+            post.title = title
+            post.body = body
+            message = "Post updated!"
             db.session.commit()
             if message is not None:
                 flash(message)
-            return redirect(url_for("blog.index"))
+            return redirect(url_for("blog.topic", id=post.topic_id))
 
-    if id:
-        return render_template("blog/update.html", post=post)
-    else:
-        return render_template("blog/create.html")
+    return render_template("blog/update_post.html", post=post)
 
 
-def get_post(id, check_author=True):
-    """
-    Get a post and its author by id.
-
-    Checks that the id exists and optionally that the current user is
-    the author.
-
-    Args:
-        id: id of post to get
-        check_author: require the current user to be the author
-
-    Returns:
-        The post with author information.
-
-    Raises:
-        404: if a post with the given id doesn't exist
-        403: if the current user isn't the author
-    """
-
-    post = db.get_or_404(Post, id, description=f"Post id {id} doesn't exist.")
-
-    if check_author and post.author_id != g.user.id:
-        abort(403)
-
-    return post
-
-
-@bp.route("/<int:id>/delete", methods=("POST",))
+@bp.route("/<int:id>/delete_post", methods=("POST",))
 @login_required
 def delete(id):
     """
@@ -113,8 +167,9 @@ def delete(id):
     Ensures that the post exists and that the logged in user is the
     author of the post.
     """
-    post = get_post(id)
+    post = db.get_or_404(Post, id, description=f"Post id {id} doesn't exist.")
+    topic_id = post.topic_id
     db.session.delete(post)
     db.session.commit()
     flash("Post deleted!")
-    return redirect(url_for("blog.index"))
+    return redirect(url_for("blog.topic", id=topic_id))

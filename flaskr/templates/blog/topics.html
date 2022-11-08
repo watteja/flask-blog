@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Topics{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <ul>
+    {% for topic in topics %}
+      <li><h3><a href="{{ url_for('blog.topic', id=topic.id) }}">{{ topic.name }}</a></h3></li>
+    <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
+    {% else %} 
+      <li><h3>No topics have been added yet.</h3></li>
+    {% endfor %}
+  </ul>
+  <h3><a href="{{ url_for('blog.create_topic') }}">Add a new topic</a></h3>
+{% endblock %}
