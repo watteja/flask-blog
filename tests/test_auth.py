@@ -11,13 +11,13 @@ def test_register(client, app):
 
     # test that successful registration redirects to the login page
     response = client.post(
-        "/auth/register", data={"username": "a", "password": "a", "confirmation": "a"}
+        "/auth/register", data={"username": "aaa", "password": "aA1!bbbb", "confirmation": "aA1!bbbb"}
     )
     assert response.headers["Location"] == "/auth/login"
 
     # test that the user was inserted into the database
     with app.app_context():
-        select = db.select(User).filter_by(username="a")
+        select = db.select(User).filter_by(username="aaa")
         user = db.session.execute(select).scalar()
         assert user is not None
 
@@ -27,9 +27,11 @@ def test_register(client, app):
     ("username", "password", "confirmation", "message"),
     (
         ("", "", "", "Username is required."),
-        ("a", "", "", "Password is required."),
-        ("a", "a", "b", "Passwords must match."),
-        ("test", "test", "test", "already registered"),
+        ("a", "aA1!bbbb", "aA1!bbbb", "Username is invalid."),
+        ("abc", "", "aA1!bbbb", "Password is required."),
+        ("abc", "mysimplepass1!", "mysimplepass1!", "Password is invalid."),
+        ("abc", "aA1!bbbb", "bA1!bbbb", "Passwords must match."),
+        ("test", "aA1!bbbb", "aA1!bbbb", "already registered"),
     ),
 )
 def test_register_validate_input(client, username, password, confirmation, message):
@@ -52,7 +54,7 @@ def test_register_server_error(client, monkeypatch):
     monkeypatch.setattr("flaskr.auth.add_new_user", fake_add_new_user)
     response = client.post(
         "auth/register",
-        data={"username": "new", "password": "new", "confirmation": "new"},
+        data={"username": "new", "password": "New1!aaa", "confirmation": "New1!aaa"},
     )
     assert response.status_code == 500
     assert called
@@ -79,8 +81,8 @@ def test_login(client, auth):
 @pytest.mark.parametrize(
     ("username", "password", "message"),
     (
-        ("a", "test", "Incorrect username."),
-        ("test", "a", "Incorrect password."),
+        ("a", "test", "Invalid username and/or password."),
+        ("test", "a", "Invalid username and/or password."),
     ),
 )
 def test_login_validate_input(auth, username, password, message):
@@ -92,7 +94,7 @@ def test_admin(client, auth):
     # test that only admin can access admin page
     auth.login()
     assert client.get("/admin", follow_redirects=True).status_code == 403
-    auth.login("john", "john123")
+    auth.login("john", "validUser#3")
     response = client.get("/admin", follow_redirects=True)
     assert "Welcome admin" in response.text
 

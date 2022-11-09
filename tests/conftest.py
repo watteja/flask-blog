@@ -7,9 +7,9 @@ from flaskr import create_app
 from flaskr import db, init_db
 from flaskr.models import User, Topic, Post
 
-_admin_pass = generate_password_hash("validUser#1")
-_user1_pass = generate_password_hash("validUser#2")
-_user2_pass = generate_password_hash("validUser#3")
+_admin_pass = generate_password_hash("validUser#3")
+_user1_pass = generate_password_hash("validUser#1")
+_user2_pass = generate_password_hash("validUser#2")
 
 
 # fixtures are functions which will run before each test function to which it is applied
@@ -56,7 +56,7 @@ class AuthActions(object):
     def __init__(self, client):
         self._client = client
 
-    def login(self, username="test", password="test"):
+    def login(self, username="test", password="validUser#1"):
         """Simulate a client sending POST login request."""
         return self._client.post(
             "/auth/login", data={"username": username, "password": password}
