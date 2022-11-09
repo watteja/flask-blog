@@ -1,20 +1,41 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Register{% endblock %}</h1>
+  <h2>{% block title %}Register a new account{% endblock %}</h2>
 {% endblock %}
 
 {% block content %}
   <form method="post">
     <div class="mb-3">
-        <input autocomplete="off" class="form-control" id="username"
-            name="username" placeholder="Username" type="text">
+      <label for="username" class="form-label">Username</label>
+      <input autocomplete="off" class="form-control" id="username" name="username"
+        aria-describedby="usernameHelp" placeholder="Username" type="text">
+      <div id="usernameHelp" class="form-text">Username has to start with a letter,
+        and can contain only letters, numbers, dashes, or underscores.<br>
+        Username must be {{ lens.uname_min }}-{{ lens.uname_max }}
+        characters long.</div>
     </div>
     <div class="mb-3">
-        <input class="form-control" id="password" name="password" placeholder="Password" type="password">
+      <label for="password" class="form-label">Password</label>
+      <input class="form-control" id="password" name="password" placeholder="Password"
+        type="password" aria-describedby="passwordHelp">
+      <div id="passwordHelp" class="form-text">
+        Your password must:
+        <ul>
+          <li>be {{ lens.pass_min }}-{{ lens.pass_max }} characters long,</li>
+          <li>contain at least 1 lowercase letter,</li>
+          <li>contain at least 1 uppercase letter,</li>
+          <li>contain at least 1 number,</li>
+          <li>contain at least 1 special symbol.</li>
+        </ul>
+      </div>
     </div>
     <div class="mb-3">
-        <input class="form-control" name="confirmation" placeholder="Confirm password" type="password">
+      <label for="confirmation" class="form-label">Password confirmation</label>
+      <input class="form-control" name="confirmation" placeholder="Password confirmation"
+        type="password" aria-describedby="confirmationHelp">
+      <div id="confirmationHelp" class="form-text">Enter the same password as before,
+        for verification.</div>
     </div>
     <button class="btn btn-primary" type="submit">Register</button>
   </form>

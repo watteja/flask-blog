@@ -1,12 +1,12 @@
-from flaskr import db
+from flaskr import db, constants
 from datetime import datetime
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(
-        db.String(), unique=True, nullable=False
-    )  # TODO: restrict username length to 50, f.ex
+        db.String(constants.USERNAME_MAX_LENGTH), unique=True, nullable=False
+    )
     hash = db.Column(db.String, nullable=False)
 
     topics = db.relationship(

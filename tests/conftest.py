@@ -7,9 +7,9 @@ from flaskr import create_app
 from flaskr import db, init_db
 from flaskr.models import User, Topic, Post
 
-_user1_pass = generate_password_hash("test")
-_user2_pass = generate_password_hash("other")
-_admin_pass = generate_password_hash("john123")
+_admin_pass = generate_password_hash("validUser#1")
+_user1_pass = generate_password_hash("validUser#2")
+_user2_pass = generate_password_hash("validUser#3")
 
 
 # fixtures are functions which will run before each test function to which it is applied

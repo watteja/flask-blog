@@ -1,4 +1,5 @@
 import functools
+import re
 
 from flask import (
     Blueprint,
@@ -17,7 +18,7 @@ from werkzeug.exceptions import abort
 from flask_admin import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 
-from flaskr import db
+from flaskr import db, constants
 from flaskr.models import User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -31,12 +32,30 @@ def register():
         confirmation = request.form["confirmation"]
         error = None
 
+        # check if username was submitted
         if not username:
             error = "Username is required."
+        # check if username is valid
+        elif (
+            not re.match(r"^[A-Za-z][A-Za-z0-9_-]+$", username)
+            or len(username) < constants.USERNAME_MIN_LENGTH
+            or len(username) > constants.USERNAME_MAX_LENGTH
+        ):
+            error = "Username is invalid."
+        # check if password was submitted
         elif not password:
             error = "Password is required."
+        # check if password is valid
+        elif (
+            re.match(r"^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$", password)
+            or len(password) < constants.PASSWORD_MIN_LENGTH
+            or len(password) > constants.PASSWORD_MAX_LENGTH
+        ):
+            error = "Password is invalid."
+        # check password confirmation
         elif password != confirmation:
             error = "Passwords must match."
+        # check that username is not already taken
         elif db.session.execute(
             db.select(db.select(User).filter_by(username=username).exists())
         ).scalar():
@@ -47,11 +66,18 @@ def register():
             # ensure user is correctly registered
             if not new_user.id:
                 abort(500)
+            flash("Successfully registered!")
             return redirect(url_for("auth.login"))
 
         flash(error, "error")
 
-    return render_template("auth/register.html")
+    input_lengths = {
+        "uname_min": constants.USERNAME_MIN_LENGTH,
+        "uname_max": constants.USERNAME_MAX_LENGTH,
+        "pass_min": constants.PASSWORD_MIN_LENGTH,
+        "pass_max": constants.PASSWORD_MAX_LENGTH,
+    }
+    return render_template("auth/register.html", lens=input_lengths)
 
 
 def add_new_user(username, password):
@@ -70,13 +96,11 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         error = None
+
         select = db.select(User).filter_by(username=username)
         user = db.session.execute(select).scalar()
-
-        if user is None:
-            error = "Incorrect username."
-        elif not check_password_hash(user.hash, password):
-            error = "Incorrect password."
+        if user is None or not check_password_hash(user.hash, password):
+            error = "Invalid username and/or password."
 
         if error is None:
             # store user id in a new session and return to index page
@@ -144,6 +168,7 @@ class UserModelView(AdminAccessMixin, ModelView):
     edit_modal = True
     column_searchable_list = ["username"]
     form_excluded_columns = ["hash"]
+    column_default_sort = "username"
 
 
 class TopicModelView(AdminAccessMixin, ModelView):

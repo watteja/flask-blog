@@ -173,9 +173,8 @@ def update_post(id):
         else:
             post.title = title
             post.body = body
-            message = "Post updated!"
             db.session.commit()
-            flash(message)
+            flash("Post updated!")
             return redirect(url_for("blog.topic", id=post.topic_id))
 
     return render_template("blog/update_post.html", post=post)
