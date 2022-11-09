@@ -62,6 +62,20 @@ def test_topic_required(app, client, auth):
     assert client.post("/1/delete_post").status_code == 403
 
 
+def test_create_topic(auth, client, app):
+    auth.login()
+    assert client.get("/create_topic").status_code == 200
+
+    response_text = client.post("/create_topic", data={"name": ""}).text
+    assert "Topic name is required." in response_text
+
+    client.post("/create_topic", data={"name": "created topic"})
+    with app.app_context():
+        select = db.select(db.func.count(Topic.id))
+        topic_count = db.session.execute(select).scalar()
+        assert topic_count == 3
+
+
 @pytest.mark.parametrize(
     "path",
     (
@@ -74,22 +88,22 @@ def test_exists_required(client, auth, path):
     assert client.post(path).status_code == 404
 
 
-def test_create(client, auth, app):
+def test_create_post(client, auth, app):
     auth.login()
     assert client.get("/create_post/1").status_code == 200
-    client.post("/create_post/1", data={"title": "created", "body": ""})
 
+    client.post("/create_post/1", data={"title": "created post", "body": ""})
     with app.app_context():
         select = db.select(db.func.count(Post.id))
         post_count = db.session.execute(select).scalar()
         assert post_count == 2
 
 
-def test_update(client, auth, app):
+def test_update_post(client, auth, app):
     auth.login()
     assert client.get("/1/update_post").status_code == 200
+    
     client.post("/1/update_post", data={"title": "updated", "body": ""})
-
     with app.app_context():
         assert db.session.get(Post, 1).title == "updated"
 
@@ -101,13 +115,13 @@ def test_update(client, auth, app):
         "/1/update_post",
     ),
 )
-def test_create_update_validate(client, auth, path):
+def test_create_update_post_validate(client, auth, path):
     auth.login()
     response = client.post(path, data={"title": "", "body": ""})
     assert "Title is required." in response.text
 
 
-def test_delete(client, auth, app):
+def test_delete_post(client, auth, app):
     auth.login()
     response = client.post("/1/delete_post")
     assert response.headers["Location"] == "/topics/1"

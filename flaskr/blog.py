@@ -175,8 +175,7 @@ def update_post(id):
             post.body = body
             message = "Post updated!"
             db.session.commit()
-            if message is not None:
-                flash(message)
+            flash(message)
             return redirect(url_for("blog.topic", id=post.topic_id))
 
     return render_template("blog/update_post.html", post=post)
