@@ -1,6 +1,6 @@
 """
 This module has dual purpose: contains 'application factory' function,
-and it tells Python that 'flaskr' directory should be treated as a package.
+and it tells Python that 'dailypush' directory should be treated as a package.
 """
 import os
 
@@ -28,7 +28,7 @@ def create_app(test_config=None):
         # admin will be overriden when deploying
         ADMIN_USERNAME="john",
         # configure the SQLite database, relative to the app instance folder
-        SQLALCHEMY_DATABASE_URI="sqlite:///flaskr.sqlite",
+        SQLALCHEMY_DATABASE_URI="sqlite:///dailypush.sqlite",
         # ensure templates are auto-reloaded
         TEMPLATES_AUTO_RELOAD=True,
         # specify that you don't use event system (https://stackoverflow.com/a/33790196/7699495)
@@ -71,15 +71,15 @@ def create_app(test_config=None):
     db.init_app(app)
     app.cli.add_command(init_db_command)
 
-    from flaskr import auth, blog, filters
-    from flaskr.models import User, Topic, Post
+    from dailypush import auth, blog, filters
+    from dailypush.models import User, Topic, Post
 
     # apply the blueprints to the app
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
     app.register_blueprint(filters.bp)
 
-    from flaskr.auth import (
+    from dailypush.auth import (
         CustomAdminIndexView,
         UserModelView,
         TopicModelView,
@@ -89,11 +89,11 @@ def create_app(test_config=None):
     # initialize Flask-Admin
     admin = Admin(
         app,
-        name="Flaskr Admin",
+        name="DailyPush Admin",
         template_mode="bootstrap3",
         index_view=CustomAdminIndexView(),
     )
-    admin.add_link(MenuLink(name="Flaskr Home Page", url="/", category="Links"))
+    admin.add_link(MenuLink(name="DailyPush Home", url="/", category="Links"))
     # add administrative views
     admin.add_view(UserModelView(User, db.session))
     admin.add_view(TopicModelView(Topic, db.session))

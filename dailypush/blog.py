@@ -9,9 +9,9 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
-from flaskr.auth import login_required
-from flaskr import db
-from flaskr.models import Topic, Post
+from dailypush.auth import login_required
+from dailypush import db
+from dailypush.models import Topic, Post
 
 bp = Blueprint("blog", __name__)
 

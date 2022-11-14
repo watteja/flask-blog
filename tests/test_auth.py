@@ -1,8 +1,8 @@
 import pytest
 from flask import g, session
 
-from flaskr import db
-from flaskr.models import User
+from dailypush import db
+from dailypush.models import User
 
 
 def test_register(client, app):
@@ -51,7 +51,7 @@ def test_register_server_error(client, monkeypatch):
         # https://stackoverflow.com/a/29480317/7699495
         return type("", (object,), {"id": None})
 
-    monkeypatch.setattr("flaskr.auth.add_new_user", fake_add_new_user)
+    monkeypatch.setattr("dailypush.auth.add_new_user", fake_add_new_user)
     response = client.post(
         "auth/register",
         data={"username": "new", "password": "New1!aaa", "confirmation": "New1!aaa"},

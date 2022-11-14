@@ -1,8 +1,8 @@
 # Flask blog
 
-This is a blog I'm creating both to learn Flask, Python, web development in
-general, and also have some place where to write down stuff regardless which
-device I'm using, with the specific functionalities I need.
+This is a microblogging platform I'm creating both to learn Flask, Python,
+web development in general, and also have some place where to write down stuff
+regardless which device I'm using, with the specific functionalities I need.
 
 ## Phase 1 - Official Flask tutorial
 
@@ -31,7 +31,7 @@ topics, and posts with __Flask-Admin__
 
 ## Phase 3 - My own blog
 
-The phase during which the actual depoloyment will take place.
+The phase after the actual depoloyment.
 Here I should add any missing essential features for the
 microblogging I want to do, and then possibly expand further
 for learning or fun, if I have time.
@@ -43,5 +43,9 @@ for learning or fun, if I have time.
 To run the app locally, in debug mode:
 
 ```bash
-flask --app flaskr --debug run
+flask --app dailypush --debug run
 ```
+
+## Live version
+
+The app currently lives at [dailypush.pythonanywhere.com](dailypush.pythonanywhere.com)

@@ -18,8 +18,8 @@ from werkzeug.exceptions import abort
 from flask_admin import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 
-from flaskr import db, constants
-from flaskr.models import User
+from dailypush import db, constants
+from dailypush.models import User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 

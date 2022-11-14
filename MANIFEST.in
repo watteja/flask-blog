@@ -1,5 +1,4 @@
-include flaskr/schema.sql
-graft flaskr/static
-graft flaskr/templates
+graft dailypush/static
+graft dailypush/templates
 graft tests
 global-exclude *.pyc

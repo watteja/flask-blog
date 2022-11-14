@@ -3,9 +3,9 @@ from datetime import datetime
 import pytest
 from werkzeug.security import generate_password_hash
 
-from flaskr import create_app
-from flaskr import db, init_db
-from flaskr.models import User, Topic, Post
+from dailypush import create_app
+from dailypush import db, init_db
+from dailypush.models import User, Topic, Post
 
 _admin_pass = generate_password_hash("validUser#3")
 _user1_pass = generate_password_hash("validUser#1")

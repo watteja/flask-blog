@@ -1,4 +1,4 @@
-from flaskr import db, constants
+from dailypush import db, constants
 from datetime import datetime
 
 

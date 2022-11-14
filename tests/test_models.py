@@ -1,5 +1,5 @@
-from flaskr import db
-from flaskr.models import User, Topic, Post
+from dailypush import db
+from dailypush.models import User, Topic, Post
 
 
 def test_user(app):

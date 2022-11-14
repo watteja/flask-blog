@@ -1,7 +1,7 @@
 import pytest
 
-from flaskr import db
-from flaskr.models import Topic, Post
+from dailypush import db
+from dailypush.models import Topic, Post
 
 
 def test_index(client, auth):
