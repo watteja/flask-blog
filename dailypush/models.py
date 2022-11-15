@@ -41,6 +41,7 @@ class Topic(db.Model):
         back_populates="topic",
         cascade="all, delete",
         passive_deletes=True,
+        lazy="select", # means the posts are returned only when accessed
     )
 
     def __str__(self):

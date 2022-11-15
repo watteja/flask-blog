@@ -10,7 +10,7 @@ from flask import (
 from werkzeug.exceptions import abort
 
 from dailypush.auth import login_required
-from dailypush import db
+from dailypush import db, constants
 from dailypush.models import Topic, Post
 
 bp = Blueprint("blog", __name__)
@@ -43,13 +43,29 @@ def topic(id):
         id: id of the selected topic.
     """
     topic = get_topic(id)
-    select = (
-        db.select(Post.id, Post.created, Post.title, Post.body)
-        .filter_by(topic_id=id)
-        .order_by(Post.created.desc())
+    page = request.args.get("page", default=1, type=int)
+    select = db.select(Post).filter_by(topic_id=id).order_by(Post.created.desc())
+    # posts = db.session.execute(select).all()
+    posts = db.paginate(
+        select, page=page, per_page=constants.POSTS_PER_PAGE, count=True
     )
-    posts = db.session.execute(select).all()
-    return render_template("blog/topic.html", topic=topic, posts=posts)
+    next_url = (
+        url_for("blog.topic", id=topic.id, page=posts.next_num)
+        if posts.has_next
+        else None
+    )
+    prev_url = (
+        url_for("blog.topic", id=topic.id, page=posts.prev_num)
+        if posts.has_prev
+        else None
+    )
+    return render_template(
+        "blog/topic.html",
+        topic=topic,
+        posts=posts,
+        next_url=next_url,
+        prev_url=prev_url,
+    )
 
 
 @bp.route("/create_topic", methods=("GET", "POST"))
@@ -137,7 +153,7 @@ def get_post(id):
 
     Args:
         id: id of post to get
-    
+
     Returns:
         The post with the passed id.
     """
@@ -145,7 +161,7 @@ def get_post(id):
 
     if post.topic.author != g.user:
         abort(403)
-    
+
     return post
 
 

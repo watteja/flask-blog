@@ -33,6 +33,8 @@ def create_app(test_config=None):
         TEMPLATES_AUTO_RELOAD=True,
         # specify that you don't use event system (https://stackoverflow.com/a/33790196/7699495)
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        # track which queries are fired during development
+        SQLALCHEMY_ECHO = True,
         # set optional Bootswatch theme for Flask-Admin
         FLASK_ADMIN_SWATCH="cerulean",
     )

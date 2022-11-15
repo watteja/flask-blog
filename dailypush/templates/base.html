@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %} - The Daily Push</title>
+    <title>{% block title %}{% endblock %}{%if self.title() %} - {% endif %}The Daily Push</title>
 
     <!-- https://getbootstrap.com/docs/5.2/ -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -22,9 +22,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mt-2">
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('blog.topics') }}">Topics</a></li>
-            {% if g.user and g.user.username == config.ADMIN_USERNAME %}
-              <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a></li>
+            {% if g.user %}
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('blog.topics') }}">Topics</a></li>
+              {% if g.user.username == config.ADMIN_USERNAME %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a></li>
+              {% endif %}  
             {% endif %}
           </ul>
           <ul class="navbar-nav ms-auto mt-2">

@@ -46,6 +46,14 @@ To run the app locally, in debug mode:
 flask --app dailypush --debug run
 ```
 
+### Testing
+
+For `pytest` to successfully recognize `dailypush` as a module, install the project:
+
+```bash
+pip install -e .
+```
+
 ## Live version
 
 The app currently lives at [dailypush.pythonanywhere.com](dailypush.pythonanywhere.com)

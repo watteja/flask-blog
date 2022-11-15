@@ -1,0 +1,17 @@
+<article class="card mb-3 post">
+  <div class="card-header">
+    <div class="d-flex justify-content-between">
+      <div>
+        Author: {{ g.user.username }}
+        <small>(<a class="action" href="{{ url_for('blog.update_post', id=post.id) }}">Edit</a>)</small>
+      </div>
+      <div>
+        <small class="text-muted">{{ post.created | format_datetime }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{ post.title }}</h5>
+    <p class="card-text">{{ post.body }}</p>
+  </div>
+</article>

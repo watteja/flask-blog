@@ -5,27 +5,42 @@
 {% endblock %}
 
 {% block content %}
-  <p><a class="action" href="{{ url_for('blog.create_post', id=topic.id) }}">Add new entry</a></p>
+  <div class="row">
+    <div class="col">
+      <p class="text-start">Showing entries {{ posts.first }} to {{ posts.last }} of {{ posts.total }}</p>
+    </div>
+    <div class="col">
+      <p class="text-end"><a class="action" href="{{ url_for('blog.create_post', id=topic.id) }}">Add new entry</a></p>
+    </div>
+  </div>
   {% for post in posts %}
-    <article class="card mb-3 post">
-      <div class="card-header">
-        <div class="d-flex justify-content-between">
-          <div>
-            Author: {{ g.user.username }}
-            <small>(<a class="action" href="{{ url_for('blog.update_post', id=post.id) }}">Edit</a>)</small>
-          </div>
-          <div>
-            <small class="text-muted">{{ post.created | format_datetime }}</small>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <h5 class="card-title">{{ post.title }}</h5>
-        <p class="card-text">{{ post.body }}</p>
-      </div>
-    </article>
+    {% include "blog/_single_post.html" %}
   <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
   {% else %} 
     <p>There are no entries for this topic yet.</p>
   {% endfor %}
+
+  <nav aria-label="Blog entries pages.">
+    <ul class="pagination justify-content-center">
+      {% if posts.has_prev %}
+        <li class="page-item"><a class="page-link" href="{{ prev_url }}">Newer</a></li>
+      {% endif %}
+      {% for page in posts.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+        {% if page %}
+          {% if page != posts.page %}
+            <!-- unknown arguments in url_for() will be treated as GET parameters -->
+            <li class="page-item"><a class="page-link" href="{{ url_for('blog.topic', id=topic.id, page=page) }}">{{ page }}</a></li>
+          {% else %}
+            <li class="page-item active"><a class="page-link">{{ page }}</a></li>
+          {% endif %}
+        {% else %}
+          <li class="page-item disabled"><a class="page-link">…</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if posts.has_next %}
+        <li class="page-item"><a class="page-link" href="{{ next_url }}">Older</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
 {% endblock %}
