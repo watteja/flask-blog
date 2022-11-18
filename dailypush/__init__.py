@@ -27,11 +27,12 @@ def create_app(test_config=None):
         SECRET_KEY="dev",
         # admin will be overriden when deploying
         ADMIN_USERNAME="john",
-        # configure the SQLite database, relative to the app instance folder
-        SQLALCHEMY_DATABASE_URI="sqlite:///dailypush.sqlite",
+        # configure the connection to existing (blank) MySQL database
+        SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:password123@localhost/daily_push",
         # ensure templates are auto-reloaded
         TEMPLATES_AUTO_RELOAD=True,
-        # specify that you don't use event system (https://stackoverflow.com/a/33790196/7699495)
+        # specify that you don't use event system
+        #   (https://stackoverflow.com/a/33790196/7699495)
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         # track which queries are fired during development
         SQLALCHEMY_ECHO = True,

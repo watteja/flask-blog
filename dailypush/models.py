@@ -7,7 +7,7 @@ class User(db.Model):
     username = db.Column(
         db.String(constants.USERNAME_MAX_LENGTH), unique=True, nullable=False
     )
-    hash = db.Column(db.String, nullable=False)
+    hash = db.Column(db.String(103), nullable=False)
 
     topics = db.relationship(
         "Topic",
@@ -56,8 +56,8 @@ class Topic(db.Model):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
-    title = db.Column(db.String, nullable=False)
-    body = db.Column(db.String, nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    body = db.Column(db.Text, nullable=False)
     topic_id = db.Column(db.ForeignKey(Topic.id, ondelete="CASCADE"), nullable=False)
 
     topic = db.relationship(Topic, lazy="joined", back_populates="posts")
