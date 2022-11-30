@@ -31,11 +31,14 @@ def create_app(test_config=None):
         SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:password123@localhost/daily_push",
         # ensure templates are auto-reloaded
         TEMPLATES_AUTO_RELOAD=True,
-        # specify that you don't use event system
-        #   (https://stackoverflow.com/a/33790196/7699495)
+        # specify that you don't use event system:
+        #   https://stackoverflow.com/a/33790196/7699495
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        # deal with disconnects by using pessimistic approach and short connection time:
+        #   https://docs.sqlalchemy.org/en/20/core/pooling.html#pool-disconnects
+        SQLALCHEMY_ENGINE_OPTIONS={"pool_pre_ping": True, "pool_recycle": 300},
         # track which queries are fired during development
-        SQLALCHEMY_ECHO = True,
+        SQLALCHEMY_ECHO=True,
         # set optional Bootswatch theme for Flask-Admin
         FLASK_ADMIN_SWATCH="cerulean",
     )
@@ -104,7 +107,7 @@ def create_app(test_config=None):
 
     # make url_for("index") point at "/", which is handled by url_for("blog.index")
     # it's also possible to define a separate main index
-    # with app.route, while giving the blog blueprint a url_prefix
+    #   with app.route, while giving the blog blueprint a url_prefix
     app.add_url_rule("/", endpoint="index")
 
     return app

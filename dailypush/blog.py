@@ -127,7 +127,7 @@ def get_topic(id):
     the author.
 
     Args:
-        id: id of topic to get
+        id: id of topic to get.
 
     Returns:
         The topic with author information.
@@ -152,7 +152,7 @@ def get_post(id):
     the author of the topic in which the post was posted.
 
     Args:
-        id: id of post to get
+        id: id of post to get.
 
     Returns:
         The post with the passed id.

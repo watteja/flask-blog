@@ -28,6 +28,7 @@ reason](https://stackoverflow.com/questions/3948975/why-store-sessions-on-the-se
 to do so, considering both current state and plans for this blog.)
 - [x] Administrator dashboard for easier tracking and managing of users,
 topics, and posts with __Flask-Admin__
+- [x] Faster RDBMS (which also matches the database on the hosting platform), with __PyMySQL__
 
 ## Phase 3 - My own blog
 
