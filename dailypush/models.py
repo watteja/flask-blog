@@ -5,7 +5,10 @@ from datetime import datetime
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(
-        db.String(constants.USERNAME_MAX_LENGTH), unique=True, nullable=False
+        db.String(constants.USERNAME_MAX_LENGTH),
+        unique=True,
+        nullable=False,
+        index=True,
     )
     hash = db.Column(db.String(103), nullable=False)
 
@@ -27,7 +30,7 @@ class User(db.Model):
 
 class Topic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False, index=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
     # https://docs.sqlalchemy.org/en/14/orm/cascades.html#passive-deletes
     author_id = db.Column(db.ForeignKey(User.id, ondelete="CASCADE"), nullable=False)
@@ -56,7 +59,7 @@ class Topic(db.Model):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=False, index=True)
     body = db.Column(db.Text, nullable=False)
     topic_id = db.Column(db.ForeignKey(Topic.id, ondelete="CASCADE"), nullable=False)
 
