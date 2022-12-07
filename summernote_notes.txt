@@ -1,0 +1,10 @@
+- filter out unwanted functionalities from summernote
+  go through the docs, both deep dive and the examples...
+  stopped at "Basic API"
+  - remove unwanted whitespace (or if it's better, fix your own white-space selector)
+- see if you can improve any ugly appearance (e.g. margins):
+  https://stackoverflow.com/questions/38498068/summernote-modal-has-no-padding
+- sanitize with Bleach
+- update readme.md
+- commit
+- update tests if needed and commit
