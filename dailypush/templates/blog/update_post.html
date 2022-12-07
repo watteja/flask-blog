@@ -13,7 +13,7 @@
   </div>
   <div class="form-group mb-3">
     <label for="body" class="mb-1">Body</label>
-    <textarea class="form-control" id="body" name="body" rows="10">{{ request.form['body'] or post['body'] }}</textarea>
+    <textarea class="form-control" id="editorBody" name="body" rows="10">{{ request.form['body'] or post['body'] }}</textarea>
   </div>
   <button type="submit" class="btn btn-primary">Save changes</button>
 </form>
