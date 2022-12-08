@@ -14,6 +14,9 @@
       <label for="body" class="mb-1">Body</label>
       <textarea class="form-control" id="body" name="body" rows="10">{{ request.form['body'] }}</textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Add entry</button>
+    <div class="text-end">
+      <a href="{{ url_for('blog.topic', id=topic_id) }}" role="button" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Add entry</button>
+    </div>
   </form>
 {% endblock %}

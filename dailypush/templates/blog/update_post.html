@@ -15,10 +15,17 @@
     <label for="body" class="mb-1">Body</label>
     <textarea class="form-control" id="body" name="body" rows="10">{{ request.form['body'] or post['body'] }}</textarea>
   </div>
-  <button type="submit" class="btn btn-primary">Save changes</button>
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-danger" type="submit" formaction="{{ url_for('blog.delete', id=post['id']) }}"
+        onclick="return confirm('Are you sure?');">Delete</button>
+    </div>
+    <div class="col text-end">
+      <a href="{{ url_for('blog.topic', id=post.topic_id) }}" role="button" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
 </form>
 <hr>
-<form action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
-  <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure?');">Delete</button>
-</form>
+Rich text formatting and maybe even live preview coming soon...
 {% endblock %}

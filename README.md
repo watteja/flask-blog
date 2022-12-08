@@ -33,9 +33,19 @@ topics, and posts with __Flask-Admin__
 ## Phase 3 - My own blog
 
 The phase after the actual depoloyment.
-Here I should add any missing essential features for the
-microblogging I want to do, and then possibly expand further
-for learning or fun, if I have time.
+Here I should add any missing essential features for the microblogging I want to do,
+and then possibly expand further for learning or fun, if I have time.
+Most significant single source of inspiration (and technical implementation) is
+_Flask Web Development, 2nd Edition_ by Miguel Grinberg.
+
+Besides updating site structure and altering the visual appearance, some noteable
+changes are:
+
+- [x] Localization of datetime with __Flask-Moment__
+- [ ] Handling database changes with __Flask-Migrate__
+- [ ] Transitioning to more secure and convenient forms with __Flask-WTF__
+- [ ] Rich text editing for posts with __Flask-PageDown__
+- [ ] Additional password security with __zxcvbn__
 
 ---
 

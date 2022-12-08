@@ -115,7 +115,7 @@ def create_post(id):
             db.session.commit()
             return redirect(url_for("blog.topic", id=id))
 
-    return render_template("blog/create_post.html")
+    return render_template("blog/create_post.html", topic_id=id)
 
 
 def get_topic(id):
