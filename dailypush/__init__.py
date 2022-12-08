@@ -8,12 +8,14 @@ import click
 from flask import Flask, render_template
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from flask_moment import Moment
 
 
 db = SQLAlchemy()
+migrate = Migrate()
 moment = Moment()
 
 
@@ -79,7 +81,8 @@ def create_app(test_config=None):
     db.init_app(app)
     app.cli.add_command(init_db_command)
 
-    # initialize Flask-Moment
+    # initialize other extensions
+    migrate.init_app(app, db)
     moment.init_app(app)
 
     from dailypush import auth, blog, filters
