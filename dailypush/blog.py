@@ -45,7 +45,6 @@ def topic(id):
     topic = get_topic(id)
     page = request.args.get("page", default=1, type=int)
     select = db.select(Post).filter_by(topic_id=id).order_by(Post.created.desc())
-    # posts = db.session.execute(select).all()
     posts = db.paginate(
         select, page=page, per_page=constants.POSTS_PER_PAGE, count=True
     )

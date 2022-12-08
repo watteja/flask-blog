@@ -1,18 +1,15 @@
 /* Size for brand */
-nav .navbar-brand
-{
+nav .navbar-brand {
     font-size: x-large;
 }
 
 /* Brand color */
-nav .navbar-brand
-{
+nav .navbar-brand {
     color: #537fbe;
 }
 
 /* Post formatting */
 .post .card-title,
-.post .card-text
-{
+.post .card-text {
     white-space: break-spaces;
 }

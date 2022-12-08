@@ -6,7 +6,7 @@
         <small>(<a class="action" href="{{ url_for('blog.update_post', id=post.id) }}">Edit</a>)</small>
       </div>
       <div>
-        <small class="text-muted">{{ post.created | format_datetime }}</small>
+        <small class="text-muted">{{ moment(post.created).format("dddd, MMMM Do YYYY, kk:mm") }}</small>
       </div>
     </div>
   </div>
