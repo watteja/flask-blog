@@ -65,6 +65,12 @@ For `pytest` to successfully recognize `dailypush` as a module, install the proj
 pip install -e .
 ```
 
+Alternatively, invoke pytest through Python interpreter (effectively adding the current directory to `sys.path`):
+
+```bash
+python -m pytest
+```
+
 ## Live version
 
 The app currently lives at [dailypush.pythonanywhere.com](dailypush.pythonanywhere.com)
