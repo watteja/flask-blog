@@ -3,12 +3,10 @@ from datetime import datetime
 
 
 class User(db.Model):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(
-        db.String(constants.USERNAME_MAX_LENGTH),
-        unique=True,
-        nullable=False,
-        index=True,
+        db.String(constants.USERNAME_MAX_LENGTH), unique=True, nullable=False
     )
     hash = db.Column(db.String(103), nullable=False)
 
@@ -29,6 +27,7 @@ class User(db.Model):
 
 
 class Topic(db.Model):
+    __tablename__ = "topics"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, index=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
@@ -44,7 +43,7 @@ class Topic(db.Model):
         back_populates="topic",
         cascade="all, delete",
         passive_deletes=True,
-        lazy="select", # means the posts are returned only when accessed
+        lazy="select",  # means the posts are returned only when accessed
     )
 
     def __str__(self):
@@ -57,6 +56,7 @@ class Topic(db.Model):
 
 
 class Post(db.Model):
+    __tablename__ = "posts"
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
     title = db.Column(db.String(100), nullable=False, index=True)
