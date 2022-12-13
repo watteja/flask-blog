@@ -66,7 +66,7 @@ def register():
             # ensure user is correctly registered
             if not new_user.id:
                 abort(500)
-            flash("Successfully registered!")
+            flash("Successfully registered! You can now login.")
             return redirect(url_for("auth.login"))
 
         flash(error, "error")

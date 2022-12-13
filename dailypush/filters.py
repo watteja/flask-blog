@@ -5,11 +5,11 @@ from flask import (
 bp = Blueprint("filters", __name__)
 
 @bp.app_template_filter("format_datetime")
-def format_datetime_filter(dt):
+def format_datetime_filter(dt): # pragma: no cover
     """
     Format datetime for post headers.
     
-    As of transitioning to Moment.js for date formatting, this filter is unused.
+    As of transitioning to Flask-Moment for date formatting, this filter is unused.
     I'm retaining it here as an example of a custom filter.
 
     Example usage in a template:

@@ -35,7 +35,7 @@ def create_app(test_config=None):
         SQLALCHEMY_DATABASE_URI="mysql+pymysql://root:password123@localhost/daily_push",
         # ensure templates are auto-reloaded
         TEMPLATES_AUTO_RELOAD=True,
-        # specify that you don't use event system:
+        # specify that you don't use Flask-SQLAlchemy event system:
         #   https://stackoverflow.com/a/33790196/7699495
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         # deal with disconnects by using pessimistic approach and short connection time:

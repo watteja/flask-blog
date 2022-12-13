@@ -1,6 +1,7 @@
 import pytest
+from datetime import datetime
 
-from dailypush import db
+from dailypush import db, moment
 from dailypush.models import Topic, Post
 
 
@@ -40,12 +41,17 @@ def test_topics(client, auth):
     assert client.post("/create_post/2").status_code == 403
 
 
-def test_topic(client, auth):
+def test_topic(app, client, auth):
+    # get inserted datetime in local time
+    with app.app_context():
+        local_time = moment.create(datetime(2022, 1, 1)).format(
+            "dddd, MMMM Do YYYY, kk:mm"
+        )
     auth.login()
     response_text = client.get("/topics/1").text
     assert "test title" in response_text
     assert "Author: test" in response_text
-    assert "Saturday, 01 January 2022, 00:00 UTC" in response_text
+    assert local_time in response_text
     assert "test\nbody" in response_text
     assert 'href="/1/update_post"' in response_text
 
@@ -102,7 +108,7 @@ def test_create_post(client, auth, app):
 def test_update_post(client, auth, app):
     auth.login()
     assert client.get("/1/update_post").status_code == 200
-    
+
     client.post("/1/update_post", data={"title": "updated", "body": ""})
     with app.app_context():
         assert db.session.get(Post, 1).title == "updated"
