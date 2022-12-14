@@ -1,5 +1,4 @@
 import functools
-import re
 
 from flask import (
     Blueprint,
@@ -8,7 +7,6 @@ from flask import (
     g,
     redirect,
     render_template,
-    request,
     session,
     url_for,
 )
@@ -20,56 +18,21 @@ from flask_admin.contrib.sqla import ModelView
 
 from dailypush import db, constants
 from dailypush.models import User
+from dailypush.forms import RegistrationForm, LoginForm
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @bp.route("/register", methods=("GET", "POST"))
 def register():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        confirmation = request.form["confirmation"]
-        error = None
-
-        # check if username was submitted
-        if not username:
-            error = "Username is required."
-        # check if username is valid
-        elif (
-            not re.match(r"^[A-Za-z][A-Za-z0-9_-]+$", username)
-            or len(username) < constants.USERNAME_MIN_LENGTH
-            or len(username) > constants.USERNAME_MAX_LENGTH
-        ):
-            error = "Username is invalid."
-        # check if password was submitted
-        elif not password:
-            error = "Password is required."
-        # check if password is valid
-        elif (
-            re.match(r"^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$", password)
-            or len(password) < constants.PASSWORD_MIN_LENGTH
-            or len(password) > constants.PASSWORD_MAX_LENGTH
-        ):
-            error = "Password is invalid."
-        # check password confirmation
-        elif password != confirmation:
-            error = "Passwords must match."
-        # check that username is not already taken
-        elif db.session.execute(
-            db.select(db.select(User).filter_by(username=username).exists())
-        ).scalar():
-            error = f"User {username} is already registered."
-
-        if error is None:
-            new_user = add_new_user(username, password)
-            # ensure user is correctly registered
-            if not new_user.id:
-                abort(500)
-            flash("Successfully registered! You can now login.")
-            return redirect(url_for("auth.login"))
-
-        flash(error, "error")
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        new_user = add_new_user(form.username.data, form.password.data)
+        # ensure user is correctly registered
+        if not new_user.id:
+            abort(500)
+        flash("Successfully registered! You can now login.")
+        return redirect(url_for("auth.login"))
 
     input_lengths = {
         "uname_min": constants.USERNAME_MIN_LENGTH,
@@ -77,7 +40,8 @@ def register():
         "pass_min": constants.PASSWORD_MIN_LENGTH,
         "pass_max": constants.PASSWORD_MAX_LENGTH,
     }
-    return render_template("auth/register.html", lens=input_lengths)
+
+    return render_template("auth/register.html", form=form, lens=input_lengths)
 
 
 def add_new_user(username, password):
@@ -92,24 +56,18 @@ def add_new_user(username, password):
 @bp.route("/login", methods=("GET", "POST"))
 def login():
     """Log in a registered user by adding the user id to the session."""
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        error = None
-
-        select = db.select(User).filter_by(username=username)
+    form = LoginForm()
+    if form.validate_on_submit():
+        select = db.select(User).filter_by(username=form.username.data)
         user = db.session.execute(select).scalar()
-        if user is None or not check_password_hash(user.hash, password):
-            error = "Invalid username and/or password."
-
-        if error is None:
+        if user is not None and check_password_hash(user.hash, form.password.data):
             # store user id in a new session and return to index page
             session.clear()
             session["user_id"] = user.id
             return redirect(url_for("index"))
 
-        flash(error, "error")
-    return render_template("auth/login.html")
+        flash("Invalid username and/or password.", "error")
+    return render_template("auth/login.html", form=form)
 
 
 @bp.before_app_request

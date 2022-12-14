@@ -59,7 +59,7 @@ class Post(db.Model):
     __tablename__ = "posts"
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
-    title = db.Column(db.String(100), nullable=False, index=True)
+    title = db.Column(db.String(100), nullable=True, index=True)
     body = db.Column(db.Text, nullable=False)
     topic_id = db.Column(db.ForeignKey(Topic.id, ondelete="CASCADE"), nullable=False)
 

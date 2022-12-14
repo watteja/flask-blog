@@ -5,20 +5,22 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <div class="mb-3">
-      <label for="username" class="form-label">Username</label>
-      <input autocomplete="off" class="form-control" id="username" name="username"
-        aria-describedby="usernameHelp" placeholder="Username" type="text">
+  <form method="POST">
+    {{ form.csrf_token }}
+    <div class="form-group mb-3">
+      {{ form.username.label(class_="form-label", for="username") }}
+      {{ form.username(class_="form-control", autocomplete="off", aria_describedby="usernameHelp") }}
       <div id="usernameHelp" class="form-text">Username has to start with a letter,
         and can contain only letters, numbers, dashes, or underscores.<br>
         Username must be {{ lens.uname_min }}-{{ lens.uname_max }}
         characters long.</div>
+      {% for error in form.username.errors %}
+        <p class="text-danger">{{ error }}</p>
+      {% endfor %}
     </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
-      <input class="form-control" id="password" name="password" placeholder="Password"
-        type="password" aria-describedby="passwordHelp">
+    <div class="form-group mb-3">
+      {{ form.password.label(class_="form-label", for="password") }}
+      {{ form.password(class_="form-control", aria_describedby="passwordHelp") }}
       <div id="passwordHelp" class="form-text">
         Your password must:
         <ul>
@@ -29,13 +31,18 @@
           <li>contain at least 1 special symbol.</li>
         </ul>
       </div>
+      {% for error in form.password.errors|unique %}
+        <p class="text-danger">{{ error }}</p>
+      {% endfor %}
     </div>
-    <div class="mb-3">
-      <label for="confirmation" class="form-label">Password confirmation</label>
-      <input class="form-control" name="confirmation" placeholder="Password confirmation"
-        type="password" aria-describedby="confirmationHelp">
+    <div class="form-group mb-3">
+      {{ form.confirmation.label(class_="form-label", for="confirmation") }}
+      {{ form.confirmation(class_="form-control", aria_describedby="confirmationHelp") }}
       <div id="confirmationHelp" class="form-text">Enter the same password as before,
         for verification.</div>
+      {% for error in form.confirmation.errors %}
+        <p class="text-danger">{{ error }}</p>
+      {% endfor %}
     </div>
     <button class="btn btn-primary" type="submit">Register</button>
   </form>

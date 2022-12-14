@@ -5,10 +5,11 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <div class="form-group mb-2">
-      <label for="title" class="mb-1">Topic name</label>
-      <input class="form-control" id="name" name="name" value="{{ request.form['name'] }}" required>
+  <form method="POST">
+    {{ form.csrf_token }}
+    <div class="form-group mb-3">
+      {{ form.title.label(class_="form-label", for="title") }}
+      {{ form.title(class_="form-control", autocomplete="off") }}
     </div>
     <button type="submit" class="btn btn-primary">Add topic</button>
   </form>

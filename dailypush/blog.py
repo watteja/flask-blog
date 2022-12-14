@@ -12,6 +12,7 @@ from werkzeug.exceptions import abort
 from dailypush.auth import login_required
 from dailypush import db, constants
 from dailypush.models import Topic, Post
+from dailypush.forms import CreateTopicForm, PostForm
 
 bp = Blueprint("blog", __name__)
 
@@ -71,22 +72,14 @@ def topic(id):
 @login_required
 def create_topic():
     """Create a new topic."""
-    if request.method == "POST":
-        name = request.form["name"]
-        message = None
+    form = CreateTopicForm()
+    if form.validate_on_submit():
+        new_topic = Topic(name=form.title.data, author=g.user)
+        db.session.add(new_topic)
+        db.session.commit()
+        return redirect(url_for("blog.topic", id=new_topic.id))
 
-        if not name:
-            message = "Topic name is required."
-
-        if message is not None:
-            flash(message, "error")
-        else:
-            db.session.add(Topic(name=name, author=g.user))
-            db.session.commit()
-            # TODO: redirect instead to the new topic's (blank) page
-            return redirect(url_for("blog.topics"))
-
-    return render_template("blog/create_topic.html")
+    return render_template("blog/create_topic.html", form=form)
 
 
 @bp.route("/create_post/<int:id>", methods=("GET", "POST"))
@@ -100,22 +93,13 @@ def create_post(id):
     """
     topic = get_topic(id)
 
-    if request.method == "POST":
-        title = request.form["title"]
-        body = request.form["body"]
-        message = None
+    form = PostForm()
+    if form.validate_on_submit():
+        db.session.add(Post(title=form.title.data, body=form.body.data, topic=topic))
+        db.session.commit()
+        return redirect(url_for("blog.topic", id=id))
 
-        if not title:
-            message = "Title is required."
-
-        if message is not None:
-            flash(message, "error")
-        else:
-            db.session.add(Post(title=title, body=body, topic=topic))
-            db.session.commit()
-            return redirect(url_for("blog.topic", id=id))
-
-    return render_template("blog/create_post.html", topic_id=id)
+    return render_template("blog/create_post.html", topic_id=id, form=form)
 
 
 def get_topic(id):
@@ -175,24 +159,18 @@ def update_post(id):
     """
     post = get_post(id)
 
-    if request.method == "POST":
-        title = request.form["title"]
-        body = request.form["body"]
-        message = None
+    form=PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.body = form.body.data
+        db.session.commit()
+        flash("Post updated!")
+        return redirect(url_for("blog.topic", id=post.topic_id))
 
-        if not title:
-            message = "Title is required."
-
-        if message is not None:
-            flash(message, "error")
-        else:
-            post.title = title
-            post.body = body
-            db.session.commit()
-            flash("Post updated!")
-            return redirect(url_for("blog.topic", id=post.topic_id))
-
-    return render_template("blog/update_post.html", post=post)
+    # Use the recent input if it failed validation. Otherwise, use the original title.
+    form.title.data = form.title.data or post.title
+    form.body.data = form.body.data or post.body
+    return render_template("blog/update_post.html", post=post, form=form)
 
 
 @bp.route("/<int:id>/delete_post", methods=("POST",))

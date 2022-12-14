@@ -5,14 +5,18 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <div class="form-group mb-2">
-      <label for="title" class="mb-1">Title</label>
-      <input class="form-control" id="title" name="title" value="{{ request.form['title'] }}" required>
+  <form method="POST">
+    {{ form.csrf_token }}
+    <div class="form-group mb-3">
+      {{ form.title.label(class_="form-label", for="title") }}
+      {{ form.title(class_="form-control", autocomplete="off") }}
     </div>
     <div class="form-group mb-3">
-      <label for="body" class="mb-1">Body</label>
-      <textarea class="form-control" id="body" name="body" rows="10">{{ request.form['body'] }}</textarea>
+      {{ form.body.label(class_="form-label", for="body") }}
+      {{ form.body(class_="form-control", rows="10") }}
+      {% for error in form.body.errors %}
+        <p class="text-danger">{{ error }}</p>
+      {% endfor %}
     </div>
     <div class="text-end">
       <a href="{{ url_for('blog.topic', id=topic_id) }}" role="button" class="btn btn-secondary">Cancel</a>
