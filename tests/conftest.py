@@ -17,7 +17,14 @@ _user2_pass = generate_password_hash("validUser#2")
 def app():
     """Create and configure a new app instance for each test."""
     # create the app with common test config
-    app = create_app({"TESTING": True, "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"})
+    app = create_app(
+        {
+            "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+            "SQLALCHEMY_ECHO": False,
+            "WTF_CSRF_ENABLED": False,
+        }
+    )
 
     # create the database and load test data
     with app.app_context():

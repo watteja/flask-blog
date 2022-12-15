@@ -72,10 +72,13 @@ def test_create_topic(auth, client, app):
     auth.login()
     assert client.get("/create_topic").status_code == 200
 
-    response_text = client.post("/create_topic", data={"name": ""}).text
-    assert "Topic name is required." in response_text
+    client.post("/create_topic", data={"title": ""}).text
+    with app.app_context():
+        select = db.select(db.func.count(Topic.id))
+        topic_count = db.session.execute(select).scalar()
+        assert topic_count == 2
 
-    client.post("/create_topic", data={"name": "created topic"})
+    client.post("/create_topic", data={"title": "created topic"})
     with app.app_context():
         select = db.select(db.func.count(Topic.id))
         topic_count = db.session.execute(select).scalar()
@@ -98,7 +101,7 @@ def test_create_post(client, auth, app):
     auth.login()
     assert client.get("/create_post/1").status_code == 200
 
-    client.post("/create_post/1", data={"title": "created post", "body": ""})
+    client.post("/create_post/1", data={"title": "", "body": "empty title is ok"})
     with app.app_context():
         select = db.select(db.func.count(Post.id))
         post_count = db.session.execute(select).scalar()
@@ -109,9 +112,9 @@ def test_update_post(client, auth, app):
     auth.login()
     assert client.get("/1/update_post").status_code == 200
 
-    client.post("/1/update_post", data={"title": "updated", "body": ""})
+    client.post("/1/update_post", data={"title": "", "body": "updated"})
     with app.app_context():
-        assert db.session.get(Post, 1).title == "updated"
+        assert db.session.get(Post, 1).body == "updated"
 
 
 @pytest.mark.parametrize(
@@ -124,7 +127,7 @@ def test_update_post(client, auth, app):
 def test_create_update_post_validate(client, auth, path):
     auth.login()
     response = client.post(path, data={"title": "", "body": ""})
-    assert "Title is required." in response.text
+    assert "Post text is required." in response.text
 
 
 def test_delete_post(client, auth, app):
