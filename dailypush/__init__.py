@@ -12,11 +12,13 @@ from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.menu import MenuLink
 from flask_moment import Moment
+from flask_pagedown import PageDown
 
 
 db = SQLAlchemy()
 migrate = Migrate()
 moment = Moment()
+pagedown = PageDown()
 
 
 def create_app(test_config=None):
@@ -41,8 +43,8 @@ def create_app(test_config=None):
         # deal with disconnects by using pessimistic approach and short connection time:
         #   https://docs.sqlalchemy.org/en/20/core/pooling.html#pool-disconnects
         SQLALCHEMY_ENGINE_OPTIONS={"pool_pre_ping": True, "pool_recycle": 300},
-        # track which queries are fired during development
-        SQLALCHEMY_ECHO=True,
+        # track which queries are executed (or don't)
+        SQLALCHEMY_ECHO=False,
         # set optional Bootswatch theme for Flask-Admin
         FLASK_ADMIN_SWATCH="cerulean",
     )
@@ -84,6 +86,7 @@ def create_app(test_config=None):
     # initialize other extensions
     migrate.init_app(app, db)
     moment.init_app(app)
+    pagedown.init_app(app)
 
     from dailypush import auth, blog, filters
     from dailypush.models import User, Topic, Post

@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField
 from wtforms import ValidationError
-from wtforms.validators import DataRequired, Length, Regexp, EqualTo
+from wtforms.validators import InputRequired, Length, Regexp, EqualTo
+from flask_pagedown.fields import PageDownField
 
 from dailypush import db, constants
 from dailypush.models import User
@@ -11,7 +12,7 @@ class RegistrationForm(FlaskForm):
     username = StringField(
         "Username",
         validators=[
-            DataRequired(message="Username is required."),
+            InputRequired(message="Username is required."),
             Length(
                 min=constants.USERNAME_MIN_LENGTH,
                 max=constants.USERNAME_MAX_LENGTH,
@@ -28,7 +29,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField(
         "Password",
         validators=[
-            DataRequired(message="Password is required."),
+            InputRequired(message="Password is required."),
             Length(
                 constants.PASSWORD_MIN_LENGTH,
                 constants.PASSWORD_MAX_LENGTH,
@@ -44,7 +45,7 @@ class RegistrationForm(FlaskForm):
     confirmation = PasswordField(
         "Confirm password",
         validators=[
-            DataRequired(),
+            InputRequired(),
             EqualTo("password", "Passwords must match."),
         ],
     )
@@ -56,22 +57,22 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = StringField(
-        "Username", validators=[DataRequired(message="Username is required.")]
+        "Username", validators=[InputRequired(message="Username is required.")]
     )
     password = PasswordField(
-        "Password", validators=[DataRequired(message="Password is required.")]
+        "Password", validators=[InputRequired(message="Password is required.")]
     )
 
 
 class CreateTopicForm(FlaskForm):
     title = StringField(
         "Topic name",
-        validators=[DataRequired(), Length(max=100)],
+        validators=[InputRequired(), Length(max=100)],
     )
 
 
 class PostForm(FlaskForm):
     title = StringField("Post title", validators=[Length(max=100)])
-    body = TextAreaField(
-        "Post text", validators=[DataRequired("Post text is required.")]
+    body = PageDownField(
+        "Post text", validators=[InputRequired("Post text is required.")]
     )

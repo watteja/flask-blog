@@ -2,12 +2,12 @@
 
 {% block header %}
   <h1>{% block title %}{{ topic.name }}{% endblock %}</h1>
-{% endblock %}
 
-{% block content %}
   <!-- Complete Flask-Moment initialization -->
   {{ moment.include_moment() }}
-  
+{% endblock %}
+
+{% block content %}  
   <div class="row">
     <div class="col">
       <p class="text-start">Showing entries {{ posts.first }} to {{ posts.last }} of {{ posts.total }}</p>

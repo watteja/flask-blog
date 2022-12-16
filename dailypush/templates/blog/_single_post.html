@@ -11,7 +11,12 @@
     </div>
   </div>
   <div class="card-body">
-    <h5 class="card-title">{{ post.title }}</h5>
-    <p class="card-text">{{ post.body }}</p>
+    <h4 class="card-title">{{ post.title }}</h4>
+    {% if post.body_html %}
+      <p class="card-text">{{ post.body_html | safe }}</p>
+    {% else %}
+      <!-- Support for older posts. -->
+      <p class="card-text">{{ post.body }}</p>
+    {% endif %}    
   </div>
 </article>

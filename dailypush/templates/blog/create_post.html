@@ -2,6 +2,10 @@
 
 {% block header %}
   <h3>{% block title %}Add a new entry{% endblock %}</h3>
+
+  <!-- Complete PageDown initialization -->
+  <script type="text/javascript" src="{{ url_for('static', filename='pagedown.converter.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='pagedown.sanitizer.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -13,7 +17,7 @@
     </div>
     <div class="form-group mb-3">
       {{ form.body.label(class_="form-label", for="body") }}
-      {{ form.body(class_="form-control", rows="10") }}
+      {{ form.body(class_="form-control", only_input=True, rows="10") }}
       {% for error in form.body.errors %}
         <p class="text-danger">{{ error }}</p>
       {% endfor %}
@@ -23,4 +27,9 @@
       <button type="submit" class="btn btn-primary">Add entry</button>
     </div>
   </form>
+  <hr>
+  Text preview link | Supported markdown link (todo: move to the body label row)
+  <div class="card card-body">
+    {{ form.body(only_preview=True) }}
+  </div>
 {% endblock %}
