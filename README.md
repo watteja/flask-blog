@@ -44,7 +44,7 @@ changes are:
 - [x] Localization of datetime with __Flask-Moment__
 - [x] Handling database changes with __Flask-Migrate__
 - [x] Transitioning to more secure and convenient forms with __Flask-WTF__
-- [ ] Rich text editing for posts with __Flask-PageDown__
+- [x] Rich text editing for posts with __Flask-PageDown__
 - [ ] Additional password security with __zxcvbn__
 
 ---

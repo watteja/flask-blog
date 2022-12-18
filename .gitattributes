@@ -1,0 +1,3 @@
+# Specify vendored files for `linguist` library
+dailypush/static/pagedown_converter.js linguist-vendored
+dailypush/static/pagedown_sanitizer.js linguist-vendored
