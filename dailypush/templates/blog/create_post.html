@@ -2,34 +2,15 @@
 
 {% block header %}
   <h3>{% block title %}Add a new entry{% endblock %}</h3>
-
-  <!-- Complete PageDown initialization -->
-  <script type="text/javascript" src="{{ url_for('static', filename='pagedown.converter.js') }}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='pagedown.sanitizer.js') }}"></script>
 {% endblock %}
 
 {% block content %}
   <form method="POST">
-    {{ form.csrf_token }}
-    <div class="form-group mb-3">
-      {{ form.title.label(class_="form-label", for="title") }}
-      {{ form.title(class_="form-control", autocomplete="off") }}
-    </div>
-    <div class="form-group mb-3">
-      {{ form.body.label(class_="form-label", for="body") }}
-      {{ form.body(class_="form-control", only_input=True, rows="10") }}
-      {% for error in form.body.errors %}
-        <p class="text-danger">{{ error }}</p>
-      {% endfor %}
-    </div>
+    {% include "blog/_post_editor.html" %}
     <div class="text-end">
       <a href="{{ url_for('blog.topic', id=topic_id) }}" role="button" class="btn btn-secondary">Cancel</a>
       <button type="submit" class="btn btn-primary">Add entry</button>
     </div>
   </form>
-  <hr>
-  Text preview link | Supported markdown link (todo: move to the body label row)
-  <div class="card card-body">
-    {{ form.body(only_preview=True) }}
-  </div>
+  {% include "blog/_post_preview.html" %}
 {% endblock %}

@@ -418,9 +418,7 @@ else
             text = _EscapeSpecialCharsWithinTagAttributes(text);
             text = _EncodeBackslashEscapes(text);
 
-            // Process anchor and image tags. Images must come first,
-            // because ![foo][f] looks like an anchor.
-            text = _DoImages(text);
+            // Process anchor tags.
             text = _DoAnchors(text);
 
             // Make links out of things like `<http://example.com/>`
@@ -600,126 +598,7 @@ else
             return result;
         }
 
-        function _DoImages(text) {
-            //
-            // Turn Markdown image shortcuts into <img> tags.
-            //
-
-            //
-            // First, handle reference-style labeled images: ![alt text][id]
-            //
-
-            /*
-            text = text.replace(/
-                (                   // wrap whole match in $1
-                    !\[
-                    (.*?)           // alt text = $2
-                    \]
-
-                    [ ]?            // one optional space
-                    (?:\n[ ]*)?     // one optional newline followed by spaces
-
-                    \[
-                    (.*?)           // id = $3
-                    \]
-                )
-                ()()()()            // pad rest of backreferences
-            /g, writeImageTag);
-            */
-            text = text.replace(/(!\[(.*?)\][ ]?(?:\n[ ]*)?\[(.*?)\])()()()()/g, writeImageTag);
-
-            //
-            // Next, handle inline images:  ![alt text](url "optional title")
-            // Don't forget: encode * and _
-
-            /*
-            text = text.replace(/
-                (                   // wrap whole match in $1
-                    !\[
-                    (.*?)           // alt text = $2
-                    \]
-                    \s?             // One optional whitespace character
-                    \(              // literal paren
-                    [ \t]*
-                    ()              // no id, so leave $3 empty
-                    <?(\S+?)>?      // src url = $4
-                    [ \t]*
-                    (               // $5
-                        (['"])      // quote char = $6
-                        (.*?)       // title = $7
-                        \6          // matching quote
-                        [ \t]*
-                    )?              // title is optional
-                    \)
-                )
-            /g, writeImageTag);
-            */
-            text = text.replace(/(!\[(.*?)\]\s?\([ \t]*()<?(\S+?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/g, writeImageTag);
-
-            return text;
-        }
-
-        function writeImageTag(wholeMatch, m1, m2, m3, m4, m5, m6, m7) {
-            var whole_match = m1;
-            var alt_text = m2;
-            var link_id = m3.toLowerCase();
-            var url = m4;
-            var title = m7;
-
-            if (!title) title = "";
-
-            if (url == "") {
-                if (link_id == "") {
-                    // lower-case and turn embedded newlines into spaces
-                    link_id = alt_text.toLowerCase().replace(/ ?\n/g, " ");
-                }
-                url = "#" + link_id;
-
-                if (g_urls.get(link_id) != undefined) {
-                    url = g_urls.get(link_id);
-                    if (g_titles.get(link_id) != undefined) {
-                        title = g_titles.get(link_id);
-                    }
-                }
-                else {
-                    return whole_match;
-                }
-            }
-
-            alt_text = escapeCharacters(alt_text.replace(/"/g, "&quot;"), "*_[]()");
-            url = escapeCharacters(url, "*_");
-            var result = "<img src=\"" + url + "\" alt=\"" + alt_text + "\"";
-
-            // attacklab: Markdown.pl adds empty title attributes to images.
-            // Replicate this bug.
-
-            //if (title != "") {
-            title = title.replace(/"/g, "&quot;");
-            title = escapeCharacters(title, "*_");
-            result += " title=\"" + title + "\"";
-            //}
-
-            result += " />";
-
-            return result;
-        }
-
         function _DoHeaders(text) {
-
-            // Setext-style headers:
-            //  Header 1
-            //  ========
-            //  
-            //  Header 2
-            //  --------
-            //
-            // text = text.replace(/^(.+)[ \t]*\n=+[ \t]*\n+/gm,
-            //     function (wholeMatch, m1) { return "<h1>" + _RunSpanGamut(m1) + "</h1>\n\n"; }
-            // );
-
-            // text = text.replace(/^(.+)[ \t]*\n-+[ \t]*\n+/gm,
-            //     function (matchFound, m1) { return "<h2>" + _RunSpanGamut(m1) + "</h2>\n\n"; }
-            // );
 
             // atx-style headers:
             //  # Header 1

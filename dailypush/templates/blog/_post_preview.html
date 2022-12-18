@@ -1,0 +1,12 @@
+<hr>
+<div class="collapse show" id="livePreview">
+  <div class="card card-body">
+    {{ form.body(only_preview=True) }}
+  </div>
+</div>
+
+<!-- Complete PageDown initialization -->
+<script type="text/javascript" src="{{ url_for('static', filename='pagedown_converter.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='pagedown_sanitizer.js') }}"></script>
+<!-- Custom JS for button behavior -->
+<script type="text/javascript" src="{{ url_for('static', filename='post_editor.js') }}"></script>

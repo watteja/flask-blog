@@ -116,6 +116,19 @@ def test_update_post(client, auth, app):
     with app.app_context():
         assert db.session.get(Post, 1).body == "updated"
 
+    # test if HTML headings convert properly
+    body = ("# Section heading\n"
+    "## Subsection heading\n"
+    "###### Level 6 heading")
+    body_html = (
+        "<h5>Section heading</h5>\n<h6>Subsection heading</h6>\n"
+        "<h6>#### Level 6 heading</h6>"
+    )
+    client.post("/1/update_post", data={"title": "Headings test", "body": body})
+    with app.app_context():
+        print(db.session.get(Post, 1).body_html)
+        assert db.session.get(Post, 1).body_html == body_html
+
 
 @pytest.mark.parametrize(
     "path",

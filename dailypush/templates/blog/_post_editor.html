@@ -1,0 +1,79 @@
+{{ form.csrf_token }}
+<div class="form-group mb-3">
+  {{ form.title.label(class_="form-label", for="title") }}
+  {{ form.title(class_="form-control", autocomplete="off", autofocus=true) }}
+</div>
+<div class="form-group mb-3">
+  <div class="row">
+    <div class="col">
+      <p class="text-start">{{ form.body.label(class_="form-label", for="body") }}</p>
+    </div>
+    <div class="col">
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="button" class="btn btn-warning btn-sm rounded-pill bi-eye-slash"
+          data-bs-target="#livePreview" aria-expanded="true" onclick="togglePreviewBtn(this)"
+          aria-controls="livePreview" data-bs-toggle="collapse" tabindex="-1"> Hide preview</button>
+        <button type="button" class="btn btn-outline-info btn-sm rounded-pill bi-question-lg"
+          data-bs-target="#markdownGuide" aria-expanded="false" onclick="toggleMdGuideBtn(this)"
+          aria-controls="markdownGuide" data-bs-toggle="collapse" tabindex="-1"
+          title="Supported Markdown syntax"></button>
+      </div>
+    </div>
+  </div>
+  <div class="collapse" id="markdownGuide">
+    <div class="alert alert-info" role="alert">
+      <p>You can use Markdown to format your post:</p>
+      <ul>
+        <li>Use hashes for <h5 style="display: inline;"># Section headings</h5>
+          and <h6 style="display: inline;">## Subsection headings</h6>
+        </li>
+        <li>Use asterisks for <em>*emphasized*</em> or <strong>**bold**</strong> text,
+          or <em><strong>***both***</strong></em>
+        </li>
+        <li>
+          Links can be included in couple of ways:
+          <ol>
+            <li>You can just add &lt; and &gt; around the full URL, such as
+              &lt;https://dailypush.pythonanywhere.com&gt;
+            </li>
+            <li>You can use [<a href="https://dailypush.pythonanywhere.com"
+              title="With or without tooltips">inline links</a>](https://dailypush.pythonanywhere.com
+              "With or without tooltips")
+            </li>
+            <li>
+              The same result can be achieved by using [<a href="https://dailypush.pythonanywhere.com"
+              title="Also with or without tooltips">reference-style links</a>][1], if you prefer.<br>
+              [1]: https://dailypush.pythonanywhere.com "Also with or without tooltips"
+            </li>
+          </ol>
+        </li>
+        <li><blockquote>Blockquotes should be prefixed with &gt;<blockquote>Add
+          additional &gt; for nesting</blockquote></blockquote>
+        </li>
+        <li>Use backticks for `<code>inline code</code>`.<br>
+          <pre><code>Indent your text 4 spaces to begin<br>a multiline code block.</code></pre>
+        </li>
+        <li>Unordered lists should be started with <code>-</code> or <code>*</code><br>
+          Ordered lists should be started with a number followed by a dot (number itself
+          doesn't matter), like <code>1.</code><br>
+          <ul><li>For sublists, indent subitems 4 spaces</li></ul>
+          For a paragraph inside a list item, indent the text at least one space.
+        </li>
+        <li>Horizontal separators can be inserted with <code>---</code> in a separate line</li>
+        <li>Extended markdown syntax for <sub>sub</sub>scripts, <sup>sup</sup>scripts,
+          and <del>strikethrough</del> is not supported, so please use <code>sub</code>,
+          <code>sup</code>, and <code>del</code> tags instead, respectively
+        </li>
+        <li>You can also use any allowed HTML tags directly in the post:<br>
+          <code>a, blockquote, br, code, del, em, h1, h2, hr, li, ol, p, pre,
+            strong, sub, sup, ul</code><br>
+          Use live preview to make sure your post looks as you expect it to
+        </li>
+      </ul>
+    </div>
+  </div>
+  {{ form.body(class_="form-control", only_input=True, rows="10") }}
+  {% for error in form.body.errors %}
+    <p class="text-danger">{{ error }}</p>
+  {% endfor %}
+</div>
