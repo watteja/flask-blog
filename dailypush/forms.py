@@ -65,7 +65,7 @@ class LoginForm(FlaskForm):
 
 
 class TopicForm(FlaskForm):
-    title = StringField(
+    name = StringField(
         "Topic name",
         validators=[InputRequired(), Length(max=100)],
     )

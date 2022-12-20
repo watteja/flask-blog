@@ -7,5 +7,21 @@
 {% endblock %}
 
 {% block content %}
-Placeholder...
+<form method="POST">
+  {{ form.csrf_token }}
+  <div class="form-group mb-3">
+    {{ form.name.label(class_="form-label", for="title") }}
+    {{ form.name(class_="form-control", autocomplete="off") }}
+  </div>
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-danger" type="submit" formaction="{{ url_for('blog.delete_topic', id=topic.id) }}"
+        onclick="return confirm('Are you sure you want to delete this topic and all its posts?');">Delete</button>
+    </div>
+    <div class="col text-end">
+      <a href="{{ url_for('blog.topic', id=topic.id) }}" role="button" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
+</form>
 {% endblock %}

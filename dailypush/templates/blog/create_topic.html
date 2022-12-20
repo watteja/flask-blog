@@ -2,7 +2,7 @@
 
 {% block header %}  
   <header class="pb-2 mb-2 border-bottom">
-    <h1 class="h3">{% block title %}Add a new topic{% endblock %}</h1>
+    <h1 class="h3">{% block title %}Add new topic{% endblock %}</h1>
   </header>
 {% endblock %}
 
@@ -10,9 +10,12 @@
   <form method="POST">
     {{ form.csrf_token }}
     <div class="form-group mb-3">
-      {{ form.title.label(class_="form-label", for="title") }}
-      {{ form.title(class_="form-control", autocomplete="off") }}
+      {{ form.name.label(class_="form-label", for="title") }}
+      {{ form.name(class_="form-control", autocomplete="off") }}
     </div>
-    <button type="submit" class="btn btn-primary">Add topic</button>
+    <div class="text-end">
+      <a href="{{ url_for('blog.topics') }}" role="button" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Add topic</button>
+    </div>
   </form>
 {% endblock %}

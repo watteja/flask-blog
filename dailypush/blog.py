@@ -74,7 +74,7 @@ def create_topic():
     """Create a new topic."""
     form = TopicForm()
     if form.validate_on_submit():
-        new_topic = Topic(name=form.title.data, author=g.user)
+        new_topic = Topic(name=form.name.data, author=g.user)
         db.session.add(new_topic)
         db.session.commit()
         return redirect(url_for("blog.topic", id=new_topic.id))
@@ -85,8 +85,40 @@ def create_topic():
 @bp.route("/update_topic/<int:id>", methods=("GET", "POST"))
 @login_required
 def update_topic(id):
+    """
+    Update an existing topic if the current user is the author.
+
+    Args:
+        id: id of the topic to edit.
+    """
     topic = get_topic(id)
-    return render_template("blog/update_topic.html", topic=topic)
+
+    form = TopicForm()
+    if form.validate_on_submit():
+        topic.name = form.name.data
+        db.session.commit()
+        flash("Topic renamed!")
+        return redirect(url_for("blog.topic", id=topic.id))
+
+    # Use the recent input if it failed validation. Otherwise, use the original title.
+    form.name.data = form.name.data or topic.name
+    return render_template("blog/update_topic.html", topic=topic, form=form)
+
+
+@bp.route("/delete_topic/<int:id>", methods=("POST",))
+@login_required
+def delete_topic(id):
+    """
+    Delete a topic.
+
+    Ensures that the topic exists and that the logged in user is its
+    author.
+    """
+    topic = get_topic(id)
+    db.session.delete(topic)
+    db.session.commit()
+    flash("Topic deleted!")
+    return redirect(url_for("blog.topics"))
 
 
 @bp.route("/create_post/<int:id>", methods=("GET", "POST"))
@@ -155,7 +187,7 @@ def get_post(id):
     return post
 
 
-@bp.route("/<int:id>/update_post", methods=("GET", "POST"))
+@bp.route("/update_post/<int:id>", methods=("GET", "POST"))
 @login_required
 def update_post(id):
     """
@@ -166,7 +198,7 @@ def update_post(id):
     """
     post = get_post(id)
 
-    form=PostForm()
+    form = PostForm()
     if form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
@@ -180,9 +212,9 @@ def update_post(id):
     return render_template("blog/update_post.html", post=post, form=form)
 
 
-@bp.route("/<int:id>/delete_post", methods=("POST",))
+@bp.route("/delete_post/<int:id>", methods=("POST",))
 @login_required
-def delete(id):
+def delete_post(id):
     """
     Delete a post.
 

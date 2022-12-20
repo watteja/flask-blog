@@ -26,7 +26,7 @@
     </div>
   <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
   {% else %} 
-    <h4 class="text-muted">No topics have been added yet.</h4>
+    <h4 class="text-muted mb-3">No topics have been added yet.</h4>
   {% endfor %}
   <a class="btn btn-success bi-plus-lg" href="{{ url_for('blog.create_topic') }}"
     role="button">&nbsp;New topic</a>

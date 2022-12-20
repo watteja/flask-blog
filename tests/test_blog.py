@@ -21,8 +21,8 @@ def test_index(client, auth):
     (
         "/create_topic",
         "/create_post/1",
-        "/1/update_post",
-        "/1/delete_post",
+        "/update_post/1",
+        "/delete_post/1",
     ),
 )
 def test_login_required(client, path):
@@ -64,8 +64,8 @@ def test_topic_required(app, client, auth):
 
     auth.login()
     # current user can't modify other user's post
-    assert client.post("/1/update_post").status_code == 403
-    assert client.post("/1/delete_post").status_code == 403
+    assert client.post("/update_post/1").status_code == 403
+    assert client.post("/delete_post/1").status_code == 403
 
 
 def test_create_topic(auth, client, app):
@@ -88,8 +88,8 @@ def test_create_topic(auth, client, app):
 @pytest.mark.parametrize(
     "path",
     (
-        "/2/update_post",
-        "/2/delete_post",
+        "/update_post/2",
+        "/delete_post/2",
     ),
 )
 def test_exists_required(client, auth, path):
@@ -110,9 +110,9 @@ def test_create_post(client, auth, app):
 
 def test_update_post(client, auth, app):
     auth.login()
-    assert client.get("/1/update_post").status_code == 200
+    assert client.get("/update_post/1").status_code == 200
 
-    client.post("/1/update_post", data={"title": "", "body": "updated"})
+    client.post("/update_post/1", data={"title": "", "body": "updated"})
     with app.app_context():
         assert db.session.get(Post, 1).body == "updated"
 
@@ -124,7 +124,7 @@ def test_update_post(client, auth, app):
         "<h5>Section heading</h5>\n<h6>Subsection heading</h6>\n"
         "<h6>#### Level 6 heading</h6>"
     )
-    client.post("/1/update_post", data={"title": "Headings test", "body": body})
+    client.post("/update_post/1", data={"title": "Headings test", "body": body})
     with app.app_context():
         print(db.session.get(Post, 1).body_html)
         assert db.session.get(Post, 1).body_html == body_html
@@ -134,7 +134,7 @@ def test_update_post(client, auth, app):
     "path",
     (
         "/create_post/1",
-        "/1/update_post",
+        "/update_post/1",
     ),
 )
 def test_create_update_post_validate(client, auth, path):
@@ -145,7 +145,7 @@ def test_create_update_post_validate(client, auth, path):
 
 def test_delete_post(client, auth, app):
     auth.login()
-    response = client.post("/1/delete_post")
+    response = client.post("/delete_post/1")
     assert response.headers["Location"] == "/topics/1"
 
     with app.app_context():
