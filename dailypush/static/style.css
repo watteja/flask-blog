@@ -1,3 +1,7 @@
+body{
+    background:#eee;
+}
+
 /* Size for brand */
 nav .navbar-brand {
     font-size: x-large;
@@ -26,4 +30,29 @@ blockquote {
 #livePreview,
 #markdownGuide {
     transition: none;
+}
+
+/* Topic list */
+.topic-list-card {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: 0;
+}
+
+.topic-list-card .card-body {
+    padding: 1.5rem 1.5rem;
+}
+
+.topic-name a {
+    color: #3c4142;
+    text-decoration: none;
+}
+.topic-name a:hover {
+    color: #68CBD7;
+}
+
+.topic-list-btn {
+    font-size: 1.5em;
+    padding-top: 0;
+    padding-bottom: 0;
 }

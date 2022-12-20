@@ -12,7 +12,7 @@ from werkzeug.exceptions import abort
 from dailypush.auth import login_required
 from dailypush import db, constants
 from dailypush.models import Topic, Post
-from dailypush.forms import CreateTopicForm, PostForm
+from dailypush.forms import TopicForm, PostForm
 
 bp = Blueprint("blog", __name__)
 
@@ -72,7 +72,7 @@ def topic(id):
 @login_required
 def create_topic():
     """Create a new topic."""
-    form = CreateTopicForm()
+    form = TopicForm()
     if form.validate_on_submit():
         new_topic = Topic(name=form.title.data, author=g.user)
         db.session.add(new_topic)
@@ -80,6 +80,13 @@ def create_topic():
         return redirect(url_for("blog.topic", id=new_topic.id))
 
     return render_template("blog/create_topic.html", form=form)
+
+
+@bp.route("/update_topic/<int:id>", methods=("GET", "POST"))
+@login_required
+def update_topic(id):
+    topic = get_topic(id)
+    return render_template("blog/update_topic.html", topic=topic)
 
 
 @bp.route("/create_post/<int:id>", methods=("GET", "POST"))

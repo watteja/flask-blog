@@ -1,17 +1,33 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Topics{% endblock %}</h1>
+<header class="text-center mb-4">
+  <link rel="stylesheet" href="{{ url_for('static', filename='temp_css.css') }}">
+
+  <h1 class="h3">{% block title %}Your topics{% endblock %}</h1>
+  <p class="lead">Read, write, or edit your topics</p>
+</header>
 {% endblock %}
 
 {% block content %}
-  <ul>
-    {% for topic in topics %}
-      <li><h3><a href="{{ url_for('blog.topic', id=topic.id) }}">{{ topic.name }}</a></h3></li>
-    <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
-    {% else %} 
-      <li><h3>No topics have been added yet.</h3></li>
-    {% endfor %}
-  </ul>
-  <h3><a href="{{ url_for('blog.create_topic') }}">Add a new topic</a></h3>
+  {% for topic in topics %}
+    <div class="card mb-3 topic-list-card">
+      <div class="card-body row text-center">
+        <div class="col-md-9 text-md-start topic-name">
+          <h4><a href="{{ url_for('blog.topic', id=topic.id) }}">{{ topic.name }}</a></h4>
+        </div>
+        <div class="col-md-3 text-md-end align-self-center">
+          <a role="button" class="btn btn-success bi-plus-lg topic-list-btn me-1"
+            title="Add new post" href="{{ url_for('blog.create_post', id=topic.id) }}"></a>
+            <a role="button" class="btn btn-warning bi-pencil topic-list-btn ms-1"
+            title="Edit topic" href="{{ url_for('blog.update_topic', id=topic.id) }}"></a>
+        </div>
+      </div>
+    </div>
+  <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
+  {% else %} 
+    <h4 class="text-muted">No topics have been added yet.</h4>
+  {% endfor %}
+  <a class="btn btn-success bi-plus-lg" href="{{ url_for('blog.create_topic') }}"
+    role="button">&nbsp;New topic</a>
 {% endblock %}

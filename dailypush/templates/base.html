@@ -45,9 +45,7 @@
       </div>
     </nav>
     <main class="container">
-      <header class="pb-2 mb-2 border-bottom">
-        {% block header %}{% endblock %}
-      </header>
+      {% block header %}{% endblock %}
       <!-- 'with' in Jinja is used only for variable scope -->
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

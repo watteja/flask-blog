@@ -150,5 +150,6 @@ class PostModelView(AdminAccessMixin, ModelView):
     edit_modal = True
     column_searchable_list = ["title", "topic.name"]
     column_filters = ["body"]
-    column_sortable_list = ["title", ("topic", ("topic.name"))]
+    column_sortable_list = ["created", ("topic", ("topic.name"))]
+    column_default_sort = ("created", True)
     form_ajax_refs = {"topic": {"fields": ["name"], "page_size": 5}}

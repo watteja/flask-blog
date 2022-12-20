@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}{{ topic.name }}{% endblock %}</h1>
+  <header class="pb-2 mb-2 border-bottom">
+    <h1 class="h3">{% block title %}{{ topic.name }}{% endblock %}</h1>
 
-  <!-- Complete Flask-Moment initialization -->
-  {{ moment.include_moment() }}
+    <!-- Complete Flask-Moment initialization -->
+    {{ moment.include_moment() }}
+  </header>  
 {% endblock %}
 
 {% block content %}  
@@ -20,7 +22,7 @@
     {% include "blog/_single_post.html" %}
   <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
   {% else %} 
-    <p>There are no entries for this topic yet.</p>
+    <p class="text-muted">There are no entries for this topic yet.</p>
   {% endfor %}
 
   <nav aria-label="Blog entries pages.">
@@ -45,5 +47,4 @@
       {% endif %}
     </ul>
   </nav>
-
 {% endblock %}
