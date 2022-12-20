@@ -1,0 +1,16 @@
+{% macro delete_modal(id, message, url) -%}
+<div class="modal" id="{{ id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>{{ message }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger"
+          formaction="{{ url }}">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
