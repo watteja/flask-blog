@@ -20,6 +20,8 @@ def test_index(client, auth):
     "path",
     (
         "/create_topic",
+        "/update_topic/1",
+        "/delete_topic/1",
         "/create_post/1",
         "/update_post/1",
         "/delete_post/1",
@@ -53,7 +55,7 @@ def test_topic(app, client, auth):
     assert "Author: test" in response_text
     assert local_time in response_text
     assert "test\nbody" in response_text
-    assert 'href="/1/update_post"' in response_text
+    assert 'href="/update_post/1"' in response_text
 
 
 def test_topic_required(app, client, auth):
@@ -72,17 +74,35 @@ def test_create_topic(auth, client, app):
     auth.login()
     assert client.get("/create_topic").status_code == 200
 
-    client.post("/create_topic", data={"title": ""}).text
+    client.post("/create_topic", data={"name": ""}).text
     with app.app_context():
         select = db.select(db.func.count(Topic.id))
         topic_count = db.session.execute(select).scalar()
         assert topic_count == 2
 
-    client.post("/create_topic", data={"title": "created topic"})
+    client.post("/create_topic", data={"name": "created topic"})
     with app.app_context():
         select = db.select(db.func.count(Topic.id))
         topic_count = db.session.execute(select).scalar()
         assert topic_count == 3
+
+
+def test_update_topic(auth, client, app):
+    auth.login()
+    assert client.get("/update_topic/1").status_code == 200
+
+    client.post("/update_topic/1", data={"name": "updated"})
+    with app.app_context():
+        assert db.session.get(Topic, 1).name == "updated"
+
+
+def test_delete_topic(auth, client, app):
+    auth.login()
+    response = client.post("/delete_topic/1")
+    assert response.headers["Location"] == "/topics"
+
+    with app.app_context():
+        assert db.session.get(Topic, 1) is None
 
 
 @pytest.mark.parametrize(

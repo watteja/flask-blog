@@ -1,5 +1,11 @@
-body{
-    background:#eee;
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #eee;
 }
 
 /* Size for brand */
@@ -35,7 +41,7 @@ blockquote {
 /* Topic list */
 .topic-list-card {
     box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
-    border: 0 solid rgba(0,0,0,.125);
+    border: 0 solid rgba(0, 0, 0, .125);
     border-radius: 0;
 }
 
@@ -47,6 +53,7 @@ blockquote {
     color: #3c4142;
     text-decoration: none;
 }
+
 .topic-name a:hover {
     color: #68CBD7;
 }
