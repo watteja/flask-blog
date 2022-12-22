@@ -9,7 +9,7 @@ regardless which device I'm using, with the specific functionalities I need.
 The initial version of this blog was pretty much identical to the original
 Flask [tutorial].
 
-[tutorial]: <https://flask.palletsprojects.com/en/2.2.x/tutorial/>
+[tutorial]: https://flask.palletsprojects.com/en/2.2.x/tutorial/
 
 ## Phase 2 - Imitating Learning Log
 
@@ -19,16 +19,16 @@ Learning Log, developed for _Python Crash Course, 2nd Edition_ by Eric
 Matthes. Since Learning Log relies on Django, this means implementing several
 additional features, major ones through extensions:
 
-- [x] More modern look and responsive design with transition to __Bootstrap 5__
-- [x] Object-relational mapping with __Flask-SQLAlchemy__, for easier and more
-sustainable handling of underlying database models
-- [ ] ~~Server-side session management with __Flask-Session__~~  
-(after some research I decided to not switch, since I couldn't find a [good
-reason](https://stackoverflow.com/questions/3948975/why-store-sessions-on-the-server-instead-of-inside-a-cookie)
-to do so, considering both current state and plans for this blog.)
+- [x] More modern look and responsive design with transition to **Bootstrap 5**
+- [x] Object-relational mapping with **Flask-SQLAlchemy**, for easier and more
+      sustainable handling of underlying database models
+- [ ] ~~Server-side session management with **Flask-Session**~~  
+      (after some research I decided to not switch, since I couldn't find a [good
+      reason](https://stackoverflow.com/questions/3948975/why-store-sessions-on-the-server-instead-of-inside-a-cookie)
+      to do so, considering both current state and plans for this blog.)
 - [x] Administrator dashboard for easier tracking and managing of users,
-topics, and posts with __Flask-Admin__
-- [x] Faster RDBMS (which also matches the database on the hosting platform), with __PyMySQL__
+      topics, and posts with **Flask-Admin**
+- [x] Faster RDBMS (which also matches the database on the hosting platform), with **PyMySQL**
 
 ## Phase 3 - My own blog
 
@@ -41,11 +41,11 @@ _Flask Web Development, 2nd Edition_ by Miguel Grinberg.
 Besides updating site structure and altering the visual appearance, some noteable
 changes are:
 
-- [x] Localization of datetime with __Flask-Moment__
-- [x] Handling database changes with __Flask-Migrate__
-- [x] Transitioning to more secure and convenient forms with __Flask-WTF__
-- [x] Rich text editing for posts with __Flask-PageDown__
-- [ ] Additional password security with __zxcvbn__
+- [x] Localization of datetime with **Flask-Moment**
+- [x] Handling database changes with **Flask-Migrate**
+- [x] Transitioning to more secure and convenient forms with **Flask-WTF**
+- [x] Rich text editing for posts with **Flask-PageDown**
+- [ ] Additional password security with **zxcvbn**
 
 ---
 

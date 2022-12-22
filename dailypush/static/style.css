@@ -1,78 +1,76 @@
 html,
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    background: #eee;
+  background: #eee;
 }
 
 /* Size for brand */
 nav .navbar-brand {
-    font-size: x-large;
+  font-size: x-large;
 }
 
 /* Brand color */
 nav .navbar-brand {
-    color: #537fbe;
+  color: #537fbe;
 }
 
 /* Post formatting */
 .post .card-title,
 .post .card-text {
-    white-space: break-spaces;
+  white-space: break-spaces;
 }
-
 
 /* Blockquotes on the entire website */
 blockquote {
-    background: #f9f9f9;
-    border-left: 10px solid #ccc;
-    margin: 1.5em 10px;
-    padding: 0.5em 10px;
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
 }
 
 /* Disable collapse animation */
 #livePreview,
 #markdownGuide {
-    transition: none;
+  transition: none;
 }
 
 /* Topic list */
 .topic-list-card {
-    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
-    border: 0 solid rgba(0, 0, 0, .125);
-    border-radius: 0;
+  box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+  border: 0 solid rgba(0, 0, 0, 0.125);
+  border-radius: 0;
 }
 
 .topic-list-card .card-body {
-    padding: 1.5rem 1.5rem;
+  padding: 1.5rem 1.5rem;
 }
 
 .topic-name a {
-    color: #3c4142;
-    text-decoration: none;
+  color: #3c4142;
+  text-decoration: none;
 }
 
 .topic-name a:hover {
-    color: #68CBD7;
+  color: #68cbd7;
 }
 
 .topic-list-btn {
-    font-size: 1.5em;
-    padding-top: 0;
-    padding-bottom: 0;
+  font-size: 1.5em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* Partially collapsible posts */
 .post .collapse:not(.show) {
-    display: block;
-    /* height = lineheight * no of lines to display */
-    height: 10em;
-    overflow: hidden;
+  display: block;
+  height: 21.5em;
+  overflow: hidden;
 }
-    
+
 .post .collapsing {
-    height: 10em;
+  height: 21.5em;
 }

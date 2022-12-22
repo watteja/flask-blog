@@ -1,45 +1,18 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<header class="pb-2 mb-2 border-bottom">
-  <div class="jumbotron bg-secondary text-light p-5 rounded-3">
-    <h1 class="display-3">Log what matters.</h1>
-    <p class="lead">Create one or more topics you're interested in, and keep
-      a log about each one of them separetly.<br>This way, you'll have a
-      clearer overview of your progress over time.</p>
-    {% if not g.user %}
-      <p class="lead">
-        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register') }}"
-          role="button">Register &raquo;</a>
-      </p>
-    {% endif %}
-  </div>
-</header>
-
-<div>
-  <p>Testing partial collapse</p>
-  
-  <div class="collapse test-post" id="collapseExample">
-    <div class="card card-body">Bacon ipsum dolor amet doner picanha tri-tip biltong leberkas salami meatball tongue filet mignon landjaeger tail. Kielbasa salami tenderloin picanha spare ribs, beef ribs strip steak jerky cow. Pork chop chicken ham hock beef ribs turkey jerky. Shoulder
-      beef capicola doner, tongue tail sausage short ribs andouille. Rump frankfurter landjaeger t-bone, kielbasa doner ham hock shankle venison. Cupim capicola kielbasa t-bone, ball tip chicken andouille venison pork chop doner bacon beef ribs kevin shankle.
-      Short loin leberkas tenderloin ground round shank, brisket strip steak ham hock ham.
+  <header class="pb-2 mb-2 border-bottom">
+    <div class="jumbotron bg-secondary text-light p-5 rounded-3">
+      <h1 class="display-3">Log what matters.</h1>
+      <p class="lead">Create one or more topics you're interested in, and keep
+        a log about each one of them separetly.<br/>This way, you'll have a
+        clearer overview of your progress over time.</p>
+      {% if not g.user %}
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register') }}"
+            role="button">Register &raquo;</a>
+        </p>
+      {% endif %}
     </div>
-  </div>
-  <a role="button" class="btn btn-primary btn-sm bi-plus" href="#collapseExample"
-    aria-expanded="false" aria-controls="collapseExample" data-bs-toggle="collapse"
-    onclick="toggleShowMore(this)">&nbsp;Show more</a>
-  
-  <div class="collapse test-post" id="collapseExample2">
-    <div class="card card-body">Bacon ipsum dolor amet doner picanha tri-tip biltong leberkas salami meatball tongue filet mignon landjaeger tail. Kielbasa salami tenderloin picanha spare ribs, beef ribs strip steak jerky cow. Pork chop chicken ham hock beef ribs turkey jerky. Shoulder
-      beef capicola doner, tongue tail sausage short ribs andouille. Rump frankfurter landjaeger t-bone, kielbasa doner ham hock shankle venison. Cupim capicola kielbasa t-bone, ball tip chicken andouille venison pork chop doner bacon beef ribs kevin shankle.
-      Short loin leberkas tenderloin ground round shank, brisket strip steak ham hock ham.
-    </div>
-  </div>
-  <a role="button" class="btn btn-primary btn-sm bi-plus" href="#collapseExample2"
-    aria-expanded="false" aria-controls="collapseExample2" data-bs-toggle="collapse"
-    onclick="toggleShowMore(this)">&nbsp;Show more</a>
-</div>
-
-
-
+  </header>
 {% endblock %}
