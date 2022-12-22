@@ -64,7 +64,7 @@ def login():
             # store user id in a new session and return to index page
             session.clear()
             session["user_id"] = user.id
-            return redirect(url_for("index"))
+            return redirect(url_for("blog.topics"))
 
         flash("Invalid username and/or password.", "error")
     return render_template("auth/login.html", form=form)

@@ -24,6 +24,7 @@ nav .navbar-brand {
     white-space: break-spaces;
 }
 
+
 /* Blockquotes on the entire website */
 blockquote {
     background: #f9f9f9;
@@ -62,4 +63,16 @@ blockquote {
     font-size: 1.5em;
     padding-top: 0;
     padding-bottom: 0;
+}
+
+/* Partially collapsible posts */
+.post .collapse:not(.show) {
+    display: block;
+    /* height = lineheight * no of lines to display */
+    height: 10em;
+    overflow: hidden;
+}
+    
+.post .collapsing {
+    height: 10em;
 }

@@ -10,13 +10,20 @@
       </div>
     </div>
   </div>
+  <div class="collapse" id="post{{ post.id }}">
   <div class="card-body">
-    <h4 class="card-title">{{ post.title }}</h4>
+    <h4 class="card-title">{{ post.title }}</h4>    
     {% if post.body_html %}
       <p class="card-text">{{ post.body_html | safe }}</p>
     {% else %}
       <!-- Support for older posts. -->
       <p class="card-text">{{ post.body }}</p>
-    {% endif %}    
+    {% endif %}
   </div>
+</div>
+<div class="text-end mb-3 me-3">
+  <a role="button" class="btn btn-outline-dark btn-sm bi-plus" href="#post{{ post.id }}"
+    aria-expanded="false" aria-controls="post{{ post.id }}" data-bs-toggle="collapse"
+    onclick="toggleShowMore(this)">&nbsp;Show more</a>
+</div>
 </article>
