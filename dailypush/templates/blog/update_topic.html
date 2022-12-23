@@ -2,31 +2,41 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<header class="pb-2 mb-2 border-bottom">
-  <h1 class="h3">{% block title %}Edit {{ topic.name }}{% endblock %}</h1>
-</header>
+  <header class="pb-2 mb-2 border-bottom">
+    <h1 class="h3">{% block title %}Edit {{ topic.name }}{% endblock %}</h1>
+  </header>
 {% endblock %}
 
 {% block content %}
-<form method="POST">
-  {{ form.csrf_token }}
-  <div class="form-group mb-3">
-    {{ form.name.label(class_="form-label", for="title") }}
-    {{ form.name(class_="form-control", autocomplete="off") }}
-  </div>
-  <div class="row">
-    <div class="col">
-      <button class="btn btn-danger" type="button"  data-bs-toggle="modal"
-        data-bs-target="#deleteTopicModal">Delete</button>
+  <form method="POST">
+    {{ form.csrf_token }}
+    <div class="form-group mb-3">
+      {{ form.name.label(class_="form-label", for="title") }}
+      {{ form.name(class_="form-control", autocomplete="off") }}
     </div>
-    <div class="col text-end">
-      <a href="{{ url_for('blog.topic', id=topic.id) }}" role="button"
-        class="btn btn-secondary">Cancel</a>
-      <button type="submit" class="btn btn-primary">Save changes</button>
+    <div class="mb-3 form-check">
+      {{ form.is_public(class_="form-check-input", type="checkbox", id="publicCbox",
+        data_bs_toggle="tooltip") }}
+      {{ form.is_public.label(class_="form-check-label", for="publicCbox") }}
     </div>
-  </div>
-  {{ delete_modal("deleteTopicModal",
-    "Are you sure you want to delete this topic and all its posts?",
-    url_for('blog.delete_topic', id=topic.id)) }}
-</form>
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-danger" type="button"  data-bs-toggle="modal"
+          data-bs-target="#deleteTopicModal">Delete</button>
+      </div>
+      <div class="col text-end">
+        <a href="{{ url_for('blog.topic', id=topic.id) }}" role="button"
+          class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+    {{ delete_modal("deleteTopicModal",
+      "Are you sure you want to delete this topic and all its posts?",
+      url_for('blog.delete_topic', id=topic.id)) }}
+  </form>
 {% endblock %}
+
+{% block scripts %}
+  <!-- JS for partially collapsing long posts -->
+  <script type="text/javascript" src="{{ url_for('static', filename='topic_form.js') }}"></script>
+{% endblock scripts %}

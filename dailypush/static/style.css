@@ -74,3 +74,11 @@ blockquote {
 .post .collapsing {
   height: 21.5em;
 }
+
+/* Tooltip for public topic checkbox */
+.tooltip {
+  --bs-tooltip-bg: var(--bs-primary);
+}
+.tooltip .tooltip-arrow {
+  display: none;
+}

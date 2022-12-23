@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, BooleanField
 from wtforms import ValidationError
 from wtforms.validators import InputRequired, Length, Regexp, EqualTo
 from flask_pagedown.fields import PageDownField
@@ -69,6 +69,7 @@ class TopicForm(FlaskForm):
         "Topic name",
         validators=[InputRequired(), Length(max=100)],
     )
+    is_public = BooleanField("Public topic", default=False)
 
 
 class PostForm(FlaskForm):

@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<header class="text-center mb-4">
-  <link rel="stylesheet" href="{{ url_for('static', filename='temp_css.css') }}">
+  <header class="text-center mb-4">
+    <link rel="stylesheet" href="{{ url_for('static', filename='temp_css.css') }}">
 
-  <h1 class="h3">{% block title %}Your topics{% endblock %}</h1>
-  <p class="lead">Read, write, or edit your topics</p>
-</header>
+    <h1 class="h3">{% block title %}Your topics{% endblock %}</h1>
+    <p class="lead">Read, write, or edit your topics</p>
+  </header>
 {% endblock %}
 
 {% block content %}

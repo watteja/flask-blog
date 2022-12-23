@@ -37,6 +37,10 @@ class Topic(db.Model):
     created = db.Column(db.DateTime, default=datetime.utcnow)
     # https://docs.sqlalchemy.org/en/14/orm/cascades.html#passive-deletes
     author_id = db.Column(db.ForeignKey(User.id, ondelete="CASCADE"), nullable=False)
+    # using server_default to properly handle default value for non-nullable column
+    #   in already existing topics:
+    #   https://github.com/miguelgrinberg/Flask-Migrate/issues/265#issuecomment-937057519
+    is_public = db.Column(db.Boolean, nullable=False, server_default=db.sql.False_())
 
     # User object backed by author_id
     # lazy="joined" means the user is returned with the post in one query

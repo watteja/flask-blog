@@ -13,9 +13,19 @@
       {{ form.name.label(class_="form-label", for="title") }}
       {{ form.name(class_="form-control", autocomplete="off") }}
     </div>
+    <div class="mb-3 form-check">
+      {{ form.is_public(class_="form-check-input", type="checkbox", id="publicCbox",
+        data_bs_toggle="tooltip") }}
+      {{ form.is_public.label(class_="form-check-label", for="publicCbox") }}
+    </div>
     <div class="text-end">
       <a href="{{ url_for('blog.topics') }}" role="button" class="btn btn-secondary">Cancel</a>
       <button type="submit" class="btn btn-primary">Add topic</button>
     </div>
   </form>
 {% endblock %}
+
+{% block scripts %}
+  <!-- JS for partially collapsing long posts -->
+  <script type="text/javascript" src="{{ url_for('static', filename='topic_form.js') }}"></script>
+{% endblock scripts %}

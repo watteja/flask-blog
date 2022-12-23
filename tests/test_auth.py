@@ -66,7 +66,7 @@ def test_login(client, auth):
 
     # test that successful login redirects to the index page
     response = auth.login()
-    assert response.headers["Location"] == "/"
+    assert response.headers["Location"] == "/topics"
 
     # Login request previously set the user_id in the session;
     #   check that the user is loaded from the session.

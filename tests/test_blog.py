@@ -80,7 +80,7 @@ def test_create_topic(auth, client, app):
         topic_count = db.session.execute(select).scalar()
         assert topic_count == 2
 
-    client.post("/create_topic", data={"name": "created topic"})
+    client.post("/create_topic", data={"name": "created topic", "is_public": True})
     with app.app_context():
         select = db.select(db.func.count(Topic.id))
         topic_count = db.session.execute(select).scalar()
@@ -91,9 +91,11 @@ def test_update_topic(auth, client, app):
     auth.login()
     assert client.get("/update_topic/1").status_code == 200
 
-    client.post("/update_topic/1", data={"name": "updated"})
+    client.post("/update_topic/1", data={"name": "updated", "is_public": True})
     with app.app_context():
-        assert db.session.get(Topic, 1).name == "updated"
+        topic = db.session.get(Topic, 1)
+        assert topic.name == "updated"
+        assert topic.is_public
 
 
 def test_delete_topic(auth, client, app):
@@ -146,7 +148,6 @@ def test_update_post(client, auth, app):
     )
     client.post("/update_post/1", data={"title": "Headings test", "body": body})
     with app.app_context():
-        print(db.session.get(Post, 1).body_html)
         assert db.session.get(Post, 1).body_html == body_html
 
 

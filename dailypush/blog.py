@@ -74,7 +74,9 @@ def create_topic():
     """Create a new topic."""
     form = TopicForm()
     if form.validate_on_submit():
-        new_topic = Topic(name=form.name.data, author=g.user)
+        new_topic = Topic(
+            name=form.name.data, author=g.user, is_public=form.is_public.data
+        )
         db.session.add(new_topic)
         db.session.commit()
         return redirect(url_for("blog.topic", id=new_topic.id))
@@ -96,12 +98,14 @@ def update_topic(id):
     form = TopicForm()
     if form.validate_on_submit():
         topic.name = form.name.data
+        topic.is_public = form.is_public.data
         db.session.commit()
-        flash("Topic renamed!")
+        flash("Topic updated!")
         return redirect(url_for("blog.topic", id=topic.id))
 
     # Use the recent input if it failed validation. Otherwise, use the original title.
     form.name.data = form.name.data or topic.name
+    form.is_public.data = topic.is_public
     return render_template("blog/update_topic.html", topic=topic, form=form)
 
 

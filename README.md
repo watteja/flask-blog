@@ -46,6 +46,7 @@ changes are:
 - [x] Transitioning to more secure and convenient forms with **Flask-WTF**
 - [x] Rich text editing for posts with **Flask-PageDown**
 - [ ] Additional password security with **zxcvbn**
+- [ ] Add image support
 
 ---
 
