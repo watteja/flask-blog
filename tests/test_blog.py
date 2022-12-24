@@ -35,6 +35,8 @@ def test_login_required(client, path):
 def test_topics(client, auth):
     auth.login()
     response = client.get("/topics")
+    assert "No topics have been added yet" in response.text
+    response = client.get("/topics?filter=personal")
     assert "test topic" in response.text
     # current user can't see other user's topic
     assert "other topic" not in response.text

@@ -15,9 +15,11 @@
       <p class="text-start">Showing entries {{ posts.first }} to {{ posts.last }} of {{ posts.total }}</p>
     </div>
     <div class="col">
-      <p class="text-end"><a role="button" class="btn btn-success btn-sm bi-plus-lg"
-        href="{{ url_for('blog.create_post', id=topic.id) }}">&nbsp;New entry</a>
-      </p>
+      {% if g.user == topic.author %}
+        <p class="text-end"><a role="button" class="btn btn-success btn-sm bi-plus-lg"
+            href="{{ url_for('blog.create_post', id=topic.id) }}">&nbsp;New entry</a>
+        </p>
+      {% endif %}
     </div>
   </div>
   {% for post in posts %}

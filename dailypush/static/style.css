@@ -75,10 +75,17 @@ blockquote {
   height: 21.5em;
 }
 
-/* Tooltip for public topic checkbox */
+/* Tooltips */
 .tooltip {
   --bs-tooltip-bg: var(--bs-primary);
 }
 .tooltip .tooltip-arrow {
   display: none;
+}
+
+/* Topic nav tabs */
+#topicNavs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

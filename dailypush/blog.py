@@ -24,14 +24,57 @@ def index():
 
 
 @bp.route("/topics")
-@login_required
 def topics():
-    """Show all topics."""
-    select = db.select(Topic.id, Topic.name).filter_by(author=g.user)
+    """
+    Show the list of current user's or public topics, depending on
+    the selected tab.
+    """
+    filter = request.args.get("filter", default="public", type=str)
+    # visitors can also read public topics
+    if filter == "public" or g.user is None:
+        select = db.select(Topic).filter_by(is_public=True)
+        topics_title = "Public topics"
+        topics_lead = "See what others have to say"
+    else:
+        # filter == "personal"
+        select = db.select(Topic).filter_by(author=g.user)
+        topics_title = "Your topics"
+        topics_lead = "Read, write, or edit your topics"
     # all() returns rows, while scalars() returns objects.
-    #   I'd use scalars() if I was using select(Topic) above
-    topics = db.session.execute(select).all()
-    return render_template("blog/topics.html", topics=topics)
+    #   I'd use all() if I was using select(Topic.id, Topic.name) above
+    topics = db.session.execute(select).scalars()
+    return render_template(
+        "blog/topics.html",
+        topics=topics,
+        topics_title=topics_title,
+        topics_lead=topics_lead,
+        filter=filter,
+    )
+
+
+def get_topic(id):
+    """
+    Get a topic and its author by id.
+
+    Checks that the id exists and that the current user is
+    the author.
+
+    Args:
+        id: id of topic to get.
+
+    Returns:
+        The topic with author information.
+
+    Raises:
+        404: if a topic with the given id doesn't exist
+        403: if the current user isn't the author
+    """
+    topic = db.get_or_404(Topic, id, description=f"Topic with id {id} doesn't exist.")
+
+    if topic.author != g.user and not topic.is_public:
+        abort(403)
+
+    return topic
 
 
 @bp.route("/topics/<int:id>")
@@ -135,6 +178,8 @@ def create_post(id):
         id: id of the chosen topic.
     """
     topic = get_topic(id)
+    if topic.author != g.user:
+        abort(403)
 
     form = PostForm()
     if form.validate_on_submit():
@@ -143,31 +188,6 @@ def create_post(id):
         return redirect(url_for("blog.topic", id=id))
 
     return render_template("blog/create_post.html", topic_id=id, form=form)
-
-
-def get_topic(id):
-    """
-    Get a topic and its author by id.
-
-    Checks that the id exists and that the current user is
-    the author.
-
-    Args:
-        id: id of topic to get.
-
-    Returns:
-        The topic with author information.
-
-    Raises:
-        404: if a topic with the given id doesn't exist
-        403: if the current user isn't the author
-    """
-    topic = db.get_or_404(Topic, id, description=f"Topic with id {id} doesn't exist.")
-
-    if topic.author != g.user:
-        abort(403)
-
-    return topic
 
 
 def get_post(id):
