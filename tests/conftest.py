@@ -30,18 +30,35 @@ def app():
     with app.app_context():
         init_db()
         # use pre-generated hashes, since hashing for each test is slow
-        admin = User(username="john", hash=_admin_pass)
-        user1 = User(username="test", hash=_user1_pass)
-        user2 = User(username="other", hash=_user2_pass)
-        topic1 = Topic(name="test topic", author=user1, created=datetime(2022, 1, 1))
-        topic2 = Topic(name="other topic", author=user2, created=datetime(2022, 1, 2))
+        admin = User(id=3, username="john", hash=_admin_pass)
+        user1 = User(id=1, username="test", hash=_user1_pass)
+        user2 = User(id=2, username="other", hash=_user2_pass)
+        topic1 = Topic(id=1, name="test topic", author=user1, created=datetime(2022, 1, 1))
+        topic2 = Topic(id=2, name="other topic", author=user2, created=datetime(2022, 1, 2))
+        topic_public = Topic(
+            id=3,
+            name="public topic",
+            author=user1,
+            created=datetime(2022, 1, 3),
+            is_public=True,
+        )
         post1 = Post(
+            id=1,
             title="test title",
             body="test\nbody",
             topic=topic1,
-            created=datetime(2022, 1, 1),
+            created=datetime(2022, 1, 2),
         )
-        db.session.add_all([user1, user2, admin, topic1, topic2, post1])
+        post2 = Post(
+            id=2,
+            title="public post title",
+            body="public post body",
+            topic=topic_public,
+            created=datetime(2022, 1, 3),
+        )
+        db.session.add_all(
+            [user1, user2, admin, topic1, topic2, topic_public, post1, post2]
+        )
         db.session.commit()
 
     yield app

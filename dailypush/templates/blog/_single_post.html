@@ -1,12 +1,18 @@
 <article class="card mb-3 post">
-  <div class="card-header">
+  <div class="card-header text-light">
     <div class="d-flex justify-content-between">
       <div>
-        Author: {{ g.user.username }}
-        <small>(<a class="action" href="{{ url_for('blog.update_post', id=post.id) }}">Edit</a>)</small>
+        {% if page == 'index' %}
+          <p class="m-0">By {{ post.topic["author"] }} in <a class="topic-link"
+            href="{{ url_for('blog.topic', id=post.topic['id']) }}">{{ post.topic["name"] }}</a></p>
+        {% endif %}
+        {% if post.topic["author"] == g.user %}
+          <a role="button" class="btn btn-sm btn-outline-light py-0"
+            href="{{ url_for('blog.update_post', id=post.id) }}">Edit</a>
+        {% endif %}
       </div>
       <div>
-        <small class="text-muted">{{ moment(post.created).format("dddd, MMMM Do YYYY, kk:mm") }}</small>
+        <small class="text-light">{{ moment(post.created).format("dddd, MMMM Do YYYY, kk:mm") }}</small>
       </div>
     </div>
   </div>
@@ -14,10 +20,10 @@
     <div class="card-body">
       <h4 class="card-title">{{ post.title }}</h4>
       {% if post.body_html %}
-      <p class="card-text">{{ post.body_html | safe }}</p>
+        <p class="card-text">{{ post.body_html | safe }}</p>
       {% else %}
-      <!-- Support for older posts. -->
-      <p class="card-text">{{ post.body }}</p>
+        <!-- Support for older posts. -->
+        <p class="card-text">{{ post.body }}</p>
       {% endif %}
     </div>
   </div>

@@ -20,7 +20,16 @@ bp = Blueprint("blog", __name__)
 @bp.route("/")
 def index():
     """The home page."""
-    return render_template("blog/index.html")
+    select = (
+        db.select(Post)
+        .join(Topic)
+        .filter_by(is_public=True)
+        .order_by(Post.created.desc())
+        .limit(constants.RECENT_POSTS)
+    )
+    recent_posts = db.session.execute(select).scalars()
+
+    return render_template("blog/index.html", posts=recent_posts)
 
 
 @bp.route("/topics")
@@ -29,7 +38,9 @@ def topics():
     Show the list of current user's or public topics, depending on
     the selected tab.
     """
-    filter = request.args.get("filter", default="public", type=str)
+    filter = request.args.get(
+        "filter", default="personal" if g.user else "public", type=str
+    )
     # visitors can also read public topics
     if filter == "public" or g.user is None:
         select = db.select(Topic).filter_by(is_public=True)
@@ -90,7 +101,7 @@ def topic(id):
     page = request.args.get("page", default=1, type=int)
     select = db.select(Post).filter_by(topic_id=id).order_by(Post.created.desc())
     posts = db.paginate(
-        select, page=page, per_page=constants.POSTS_PER_PAGE, count=True
+        select, page=page, per_page=constants.POSTS_PER_TOPIC_PAGE, count=True
     )
     next_url = (
         url_for("blog.topic", id=topic.id, page=posts.next_num)

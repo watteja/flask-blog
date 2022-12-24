@@ -2,17 +2,30 @@
 
 {% block header %}
   <header class="pb-2 mb-2 border-bottom">
-    <div class="jumbotron bg-secondary text-light p-5 rounded-3">
+    <div class="jumbotron text-light p-5 rounded-3" id="homeSplash">
       <h1 class="display-3">Log what matters.</h1>
       <p class="lead">Create one or more topics you're interested in, and keep
         a log about each one of them separetly.<br/>This way, you'll have a
         clearer overview of your progress over time.</p>
       {% if not g.user %}
         <p class="lead">
-          <a class="btn btn-primary btn-lg" href="{{ url_for('auth.register') }}"
-            role="button">Register &raquo;</a>
+          <a class="btn btn-primary btn-lg border border-light"
+            href="{{ url_for('auth.register') }}" role="button">Register &raquo;</a>
         </p>
       {% endif %}
     </div>
+    <!-- Complete Flask-Moment initialization -->
+    {{ moment.include_moment() }}
   </header>
+{% endblock %}
+
+{% block content %}
+  <p class="lead mb-2">Recent posts</p>
+  {% for post in posts %}
+    {% set page = 'index' %}
+    {% include "blog/_single_post.html" %}
+    <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
+  {% else %} 
+    <p class="text-muted">There are no posts to show.</p>
+  {% endfor %}
 {% endblock %}

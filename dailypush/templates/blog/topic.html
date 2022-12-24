@@ -23,6 +23,7 @@
     </div>
   </div>
   {% for post in posts %}
+    {% set page = 'topic' %}
     {% include "blog/_single_post.html" %}
   <!-- 'else' in Jinja loops is equivalent to 'empty' in Django -->
   {% else %} 

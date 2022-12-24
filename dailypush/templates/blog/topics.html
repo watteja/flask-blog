@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <header class="text-center mb-4">
+  <header class="text-center mb-4 text">
     <h1 class="h3">{% block title %}{{ topics_title }}{% endblock %}</h1>
     <p class="lead">{{ topics_lead }}</p>
   </header>
@@ -42,16 +42,16 @@
     <div class="card mb-3 topic-list-card">
       <div class="card-body row text-center">
         <div class="col-md-9 text-md-start topic-name">
-          <h4><a href="{{ url_for('blog.topic', id=topic.id) }}">{{ topic.name }}</a></h4>
+          <h4><a class="stretched-link" href="{{ url_for('blog.topic', id=topic.id) }}">{{ topic.name }}</a></h4>
         </div>
         <div class="col-md-3 text-md-end align-self-center">
           {% if g.user and g.user==topic.author %}
-            <a role="button" class="btn btn-success bi-plus-lg topic-list-btn me-1"
-              title="Add new post" href="{{ url_for('blog.create_post', id=topic.id) }}"></a>
-            <a role="button" class="btn btn-warning bi-pencil topic-list-btn ms-1"
-              title="Edit topic" href="{{ url_for('blog.update_topic', id=topic.id) }}"></a>
+            <a class="btn btn-warning bi-gear topic-list-btn me-1 border border-primary text-primary"
+              role="button" title="Edit topic" href="{{ url_for('blog.update_topic', id=topic.id) }}"></a>
+            <a class="btn btn-success bi-pencil-square topic-list-btn ms-1 px-3 border border-light"
+              role="button" title="Add new post" href="{{ url_for('blog.create_post', id=topic.id) }}"></a>
           {% else %}
-            <p class="text-muted m-0">By: {{ topic.author }}</p>
+            <p class="text-light m-0">By: <em>{{ topic.author }}</em></p>
           {% endif %}
         </div>
       </div>
