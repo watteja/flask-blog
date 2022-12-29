@@ -23,7 +23,7 @@ additional features, major ones through extensions:
 - [x] Object-relational mapping with **Flask-SQLAlchemy**, for easier and more
       sustainable handling of underlying database models
 - [ ] ~~Server-side session management with **Flask-Session**~~  
-      (after some research I decided to not switch, since I couldn't find a [good
+       (after some research I decided to not switch, since I couldn't find a [good
       reason](https://stackoverflow.com/questions/3948975/why-store-sessions-on-the-server-instead-of-inside-a-cookie)
       to do so, considering both current state and plans for this blog.)
 - [x] Administrator dashboard for easier tracking and managing of users,
@@ -45,6 +45,8 @@ changes are:
 - [x] Handling database changes with **Flask-Migrate**
 - [x] Transitioning to more secure and convenient forms with **Flask-WTF**
 - [x] Rich text editing for posts with **Flask-PageDown**
+- [ ] Improved visual appearance with **Bootswatch** theme
+- [ ] Toggling between light and dark themes
 - [ ] Additional password security with **zxcvbn**
 - [ ] Add image support
 

@@ -2,17 +2,17 @@
   <div class="card-header text-light">
     <div class="d-flex justify-content-between">
       <div>
-        {% if page == 'index' %}
+        {% if page == 'index' and post.topic["author"] != g.user %}
           <p class="m-0">By {{ post.topic["author"] }} in <a class="topic-link"
-            href="{{ url_for('blog.topic', id=post.topic['id']) }}">{{ post.topic["name"] }}</a></p>
+            href="{{ url_for('blog.topic', id=post.topic['id']) }}"><em>{{ post.topic["name"] }}</em></a></p>
         {% endif %}
         {% if post.topic["author"] == g.user %}
-          <a role="button" class="btn btn-sm btn-outline-light py-0"
+          <a role="button" class="btn btn-sm btn-outline-light py-0 post-edit-link"
             href="{{ url_for('blog.update_post', id=post.id) }}">Edit</a>
         {% endif %}
       </div>
       <div>
-        <small class="text-light">{{ moment(post.created).format("dddd, MMMM Do YYYY, kk:mm") }}</small>
+        <small><em>{{ moment(post.created).format("dddd, MMMM Do YYYY, kk:mm") }}</em></small>
       </div>
     </div>
   </div>

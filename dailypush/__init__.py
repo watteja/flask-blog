@@ -46,7 +46,7 @@ def create_app(test_config=None):
         # track which queries are executed (or don't)
         SQLALCHEMY_ECHO=False,
         # set optional Bootswatch theme for Flask-Admin
-        FLASK_ADMIN_SWATCH="cerulean",
+        FLASK_ADMIN_SWATCH="darkly",
     )
 
     if test_config is None:
@@ -133,7 +133,7 @@ def init_db():
 @click.command("init-db")
 @with_appcontext
 def init_db_command():
-    """Clear the existing data and create new tables."""
+    """Clear the existing data and create new tables from command line."""
     init_db()
     click.echo("Initialized the database.")
 
