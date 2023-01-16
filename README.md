@@ -41,7 +41,7 @@ _Flask Web Development, 2nd Edition_ by Miguel Grinberg.
 Besides updating site structure and altering the visual appearance, some noteable
 changes are:
 
-- [x] Localization of datetime with **Flask-Moment**
+- [x] Localization of date and time with **Flask-Moment**
 - [x] Handling database changes with **Flask-Migrate**
 - [x] Transitioning to more secure and convenient forms with **Flask-WTF**
 - [x] Rich text editing for posts with **Flask-PageDown**
@@ -76,4 +76,4 @@ python -m pytest
 
 ## Live version
 
-The app currently lives at [dailypush.pythonanywhere.com](dailypush.pythonanywhere.com)
+The app currently lives at [dailypush.pythonanywhere.com](https://dailypush.pythonanywhere.com)
