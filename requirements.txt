@@ -36,7 +36,7 @@ six==1.16.0
 SQLAlchemy==1.4.44
 tomli==2.0.1
 webencodings==0.5.1
-Werkzeug==2.2.2
+Werkzeug==3.0.6
 wheel==0.38.4
 WTForms==3.0.1
 zipp==3.10.0
